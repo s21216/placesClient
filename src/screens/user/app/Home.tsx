@@ -1,9 +1,8 @@
-import { getAuth } from 'firebase/auth';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { useAuth } from '../../helpers/contexts/AuthContext';
-import { HomeProps } from '../../helpers/utils/types';
+import { useAuth } from '../../../helpers/contexts/AuthContext';
+import { HomeProps } from '../../../helpers/utils/types';
 
 const Home = ({ navigation }: HomeProps) => {
   const { currentUser, signOut } = useAuth();

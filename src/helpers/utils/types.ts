@@ -3,10 +3,12 @@ import { StackScreenProps } from '@react-navigation/stack';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type RootStackParamList = {
   LogIn: undefined;
-  SignUp: undefined;
+  UserSignUp: undefined;
+  BusinessSignUp: undefined;
   Home: undefined;
 };
 
 export type LogInProps = StackScreenProps<RootStackParamList, 'LogIn'>;
-export type SignUpProps = StackScreenProps<RootStackParamList, 'SignUp'>;
+export type UserSignUpProps = StackScreenProps<RootStackParamList, 'UserSignUp'>;
+export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'BusinessSignUp'>;
 export type HomeProps = StackScreenProps<RootStackParamList, 'Home'>;

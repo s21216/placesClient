@@ -2,11 +2,11 @@ export const theme = {
   colors: {
     primary: '#4285F4',
     onPrimary: 'rgb(255, 255, 255)',
-    primaryContainer: 'rgb(240, 219, 255)',
+    primaryContainer: '#dbe8ff',
     onPrimaryContainer: 'rgb(44, 0, 81)',
     secondary: 'rgb(102, 90, 111)',
     onSecondary: 'rgb(255, 255, 255)',
-    secondaryContainer: 'rgb(237, 221, 246)',
+    secondaryContainer: '#dbe8ff',
     onSecondaryContainer: 'rgb(33, 24, 42)',
     tertiary: 'rgb(128, 81, 88)',
     onTertiary: 'rgb(255, 255, 255)',

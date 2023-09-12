@@ -3,9 +3,10 @@ import React from 'react';
 
 import { useAuth } from '../../helpers/contexts/AuthContext';
 import { RootStackParamList } from '../../helpers/utils/types';
-import Home from '../../screens/app/Home';
-import LogIn from '../../screens/auth/LogIn';
-import SignUp from '../../screens/auth/SignUp';
+import BusinessSignUp from '../../screens/business/auth/BusinessSignUp';
+import Home from '../../screens/user/app/Home';
+import LogIn from '../../screens/user/auth/LogIn';
+import UserSignUp from '../../screens/user/auth/UserSignUp';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -26,10 +27,11 @@ const RootNavigator = () => {
               animationTypeForReplace: 'pop',
             }}
           />
+          <Stack.Screen name="UserSignUp" component={UserSignUp} options={{ headerShown: false }} />
           <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{ headerShown: false, title: 'Sign up' }}
+            name="BusinessSignUp"
+            component={BusinessSignUp}
+            options={{ headerShown: false }}
           />
         </>
       )}

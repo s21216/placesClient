@@ -1,48 +1,32 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { z } from 'zod';
 
-import FormInput from '../../components/inputs/FormInput';
-import { useAuth } from '../../helpers/contexts/AuthContext';
-import fetchClient from '../../helpers/utils/fetchClient';
-import { SignUpProps } from '../../helpers/utils/types';
+import FormInput from '../../../components/inputs/FormInput';
+import { useAuth } from '../../../helpers/contexts/AuthContext';
+import { LogInProps } from '../../../helpers/utils/types';
 
 const schema = z.object({
   email: z.string().email(),
-  fullName: z.string().min(2),
-  username: z.string().min(3),
   password: z.string().min(6),
 });
 
 type FormData = z.infer<typeof schema>;
-type SignUpData = {
-  email: string;
-  fullName: string;
-  username: string;
-};
 
-const SignUp = ({ navigation }: SignUpProps) => {
+const LogIn = ({ navigation }: LogInProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onBlur' });
 
-  const { signUp } = useAuth();
+  const { logIn } = useAuth();
 
-  const signUpMutation = useMutation({
-    mutationFn: (signUpData: SignUpData) => fetchClient().post('/users/signup', signUpData),
-  });
-
-  const onSignUpPress = async (data: FormData) => {
+  const onLogInPress = async (data: FormData) => {
     try {
-      const response = await signUp(data.email, data.password);
-      if (response.user) {
-        signUpMutation.mutate({ ...data });
-      }
+      logIn(data.email, data.password);
     } catch (error: any) {
       Alert.alert(error.message);
     }
@@ -56,7 +40,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
       <View style={styles.container}>
         <View>
           <Text style={styles.headline} variant="headlineLarge">
-            Create account
+            Places + Spaces
           </Text>
         </View>
         <FormInput
@@ -70,36 +54,29 @@ const SignUp = ({ navigation }: SignUpProps) => {
         <FormInput
           style={styles.input}
           control={control}
-          name="fullName"
-          label="Full name"
-          autoCapitalize="none"
-          error={errors.fullName !== undefined}
-        />
-        <FormInput
-          style={styles.input}
-          control={control}
-          name="username"
-          label="Username"
-          autoCapitalize="none"
-          error={errors.username !== undefined}
-        />
-        <FormInput
-          style={styles.input}
-          control={control}
           name="password"
           label="Password"
           autoCapitalize="none"
           secureTextEntry
           error={errors.password !== undefined}
         />
-        <Button style={styles.button} mode="contained" onPress={handleSubmit(onSignUpPress)}>
-          Sign up
+        <Button style={styles.button} mode="contained" onPress={handleSubmit(onLogInPress)}>
+          Log in
         </Button>
         <View>
           <Text>
-            Already have an account?{' '}
-            <Text style={{ color: '#4285F4' }} onPress={() => navigation.navigate('LogIn')}>
-              Log in
+            Don't have an account?{' '}
+            <Text style={{ color: '#4285F4' }} onPress={() => navigation.navigate('UserSignUp')}>
+              Sign up
+            </Text>
+          </Text>
+        </View>
+        <View>
+          <Text>
+            <Text
+              style={{ color: '#4285F4' }}
+              onPress={() => navigation.navigate('BusinessSignUp')}>
+              Sign up for a business account.
             </Text>
           </Text>
         </View>
@@ -108,7 +85,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
   );
 };
 
-export default SignUp;
+export default LogIn;
 
 const styles = StyleSheet.create({
   container: {
