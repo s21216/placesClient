@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (response.user) {
       userSignUpMutation.mutate({ email, fullName, username });
       if (userSignUpMutation.isSuccess) {
-        setRole();
+        setRole(userSignUpMutation.data.data.role);
       }
     }
   }

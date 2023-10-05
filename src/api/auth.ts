@@ -1,3 +1,4 @@
+import { components } from '../../schema';
 import fetchClient from '../helpers/utils/fetchClient';
 
 export type LogInResponse = {
@@ -23,8 +24,10 @@ export type BusinessSignUpData = {
 
 export const logInFn = () => fetchClient().post<LogInResponse>('auth/signin');
 
+type AuthResponse = components['schemas']['AuthResponse'];
+
 export const userSignUpFn = (userSignUpData: UserSignUpData) =>
-  fetchClient().post('auth/users/signup', userSignUpData);
+  fetchClient().post<AuthResponse>('auth/users/signup', userSignUpData);
 
 export const businessSignUpFn = (businessSignUpData: BusinessSignUpData) =>
-  fetchClient().post('auth/businesses/signup', businessSignUpData);
+  fetchClient().post<AuthResponse>('auth/businesses/signup', businessSignUpData);
