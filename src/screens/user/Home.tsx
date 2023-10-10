@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { useAuth } from '../../../helpers/contexts/AuthContext';
-import { HomeProps } from '../../../helpers/utils/types';
+import { useAuth } from '../../helpers/contexts/AuthContext';
+import { HomeProps } from '../../helpers/utils/types';
 
 const Home = ({ navigation }: HomeProps) => {
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, role, signOut } = useAuth();
   const onSignOutPress = async () => {
     await signOut();
   };
@@ -13,6 +13,7 @@ const Home = ({ navigation }: HomeProps) => {
   return (
     <View style={styles.container}>
       <Text>Hi {currentUser?.email}!</Text>
+      <Text>You are a {role}!</Text>
       <Button mode="contained" onPress={onSignOutPress}>
         Log out
       </Button>

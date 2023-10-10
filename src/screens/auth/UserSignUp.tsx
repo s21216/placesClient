@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { z } from 'zod';
 
-import FormInput from '../../../components/inputs/FormInput';
-import { useAuth } from '../../../helpers/contexts/AuthContext';
-import { UserSignUpProps } from '../../../helpers/utils/types';
+import FormInput from '../../components/inputs/FormInput';
+import { useAuth } from '../../helpers/contexts/AuthContext';
+import { UserSignUpProps } from '../../helpers/utils/types';
 
 const schema = z.object({
   email: z.string().email(),
@@ -27,11 +27,7 @@ const UserSignUp = ({ navigation }: UserSignUpProps) => {
   const { userSignUp } = useAuth();
 
   const onSignUpPress = (data: FormData) => {
-    try {
-      userSignUp({ ...data });
-    } catch (error: any) {
-      Alert.alert(error.message);
-    }
+    userSignUp({ ...data });
   };
 
   return (

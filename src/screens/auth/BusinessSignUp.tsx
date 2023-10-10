@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { z } from 'zod';
 
-import FormInput from '../../../components/inputs/FormInput';
-import { useAuth } from '../../../helpers/contexts/AuthContext';
-import { BusinessSignUpProps } from '../../../helpers/utils/types';
+import FormInput from '../../components/inputs/FormInput';
+import { useAuth } from '../../helpers/contexts/AuthContext';
+import { BusinessSignUpProps } from '../../helpers/utils/types';
 
 const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
 
@@ -29,11 +29,7 @@ const BusinessSignUp = ({ navigation }: BusinessSignUpProps) => {
   const { businessSignUp } = useAuth();
 
   const onSignUpPress = async (data: FormData) => {
-    try {
-      businessSignUp({ ...data });
-    } catch (error: any) {
-      Alert.alert(error.message);
-    }
+    businessSignUp({ ...data });
   };
 
   return (
