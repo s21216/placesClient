@@ -1,12 +1,6 @@
 import { components } from '../../schema';
 import fetchClient from '../helpers/utils/fetchClient';
 
-export type LogInResponse = {
-  email: string;
-  firebaseUid: string;
-  role: string;
-};
-
 export type UserSignUpData = {
   email: string;
   fullName: string;
@@ -22,9 +16,9 @@ export type BusinessSignUpData = {
   password?: string;
 };
 
-export const logInFn = () => fetchClient().post<LogInResponse>('auth/signin');
-
 type AuthResponse = components['schemas']['AuthResponse'];
+
+export const logInFn = () => fetchClient().post<AuthResponse>('auth/signin');
 
 export const userSignUpFn = (userSignUpData: UserSignUpData) =>
   fetchClient().post<AuthResponse>('auth/users/signup', userSignUpData);

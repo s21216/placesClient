@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { FIREBASE_AUTH } from '../../../firebase-config';
 import {
@@ -19,6 +20,7 @@ import {
 type AuthContextType = {
   currentUser?: User | null;
   role?: string | null;
+  loading: boolean;
   logIn: (email: string, password: string) => void;
   signOut: () => Promise<void>;
   userSignUp: ({ email, fullName, username, password }: UserSignUpData) => void;
@@ -44,23 +46,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logInMutation = useMutation({
     mutationFn: logInFn,
+    onSuccess: (data) => {
+      setRole(data.data.role);
+    },
   });
 
   const userSignUpMutation = useMutation({
     mutationFn: userSignUpFn,
+    onSuccess: (data) => {
+      setRole(data.data.role);
+    },
   });
 
   const businessSignUpMutation = useMutation({
     mutationFn: businessSignUpFn,
+    onSuccess: (data) => {
+      setRole(data.data.role);
+    },
   });
 
   async function logIn(email: string, password: string) {
-    const response = await signInWithEmailAndPassword(auth, email, password);
-    if (response.user) {
-      logInMutation.mutate();
-      if (logInMutation.isSuccess) {
-        setRole(logInMutation.data.data.role);
-      }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      Alert.alert(error.message);
     }
   }
 
@@ -71,12 +80,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function userSignUp({ email, fullName, username, password }: UserSignUpData) {
-    const response = await createUserWithEmailAndPassword(auth, email, password!);
-    if (response.user) {
-      userSignUpMutation.mutate({ email, fullName, username });
-      if (userSignUpMutation.isSuccess) {
-        setRole(userSignUpMutation.data.data.role);
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password!);
+      if (response.user) {
+        userSignUpMutation.mutate({ email, fullName, username });
       }
+    } catch (error: any) {
+      Alert.alert(error.message);
     }
   }
 
@@ -87,24 +97,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     name,
     password,
   }: BusinessSignUpData) {
-    const response = await createUserWithEmailAndPassword(auth, email, password!);
-    if (response.user) {
-      businessSignUpMutation.mutate({ email, address, phoneNumber, name });
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password!);
+      if (response.user) {
+        businessSignUpMutation.mutate({ email, address, phoneNumber, name });
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
     }
   }
 
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
+      if (user) {
+        setCurrentUser(user);
+        logInMutation.mutate();
+      }
     });
-
+    setLoading(false);
     return unsubscribe;
   }, []);
 
   const value: AuthContextType = {
     currentUser,
     role,
+    loading,
     logIn,
     signOut,
     userSignUp,

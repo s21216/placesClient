@@ -3,20 +3,29 @@ import React from 'react';
 
 import { useAuth } from '../../helpers/contexts/AuthContext';
 import { RootStackParamList } from '../../helpers/utils/types';
-import BusinessSignUp from '../../screens/business/auth/BusinessSignUp';
-import Home from '../../screens/user/app/Home';
-import LogIn from '../../screens/user/auth/LogIn';
-import UserSignUp from '../../screens/user/auth/UserSignUp';
+import BusinessSignUp from '../../screens/auth/BusinessSignUp';
+import LogIn from '../../screens/auth/LogIn';
+import UserSignUp from '../../screens/auth/UserSignUp';
+import BusinessHome from '../../screens/business/BusinessHome';
+import Home from '../../screens/user/Home';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const { currentUser } = useAuth();
+  const { role } = useAuth();
 
   return (
     <Stack.Navigator>
-      {currentUser ? (
-        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+      {role ? (
+        role === 'USER' ? (
+          <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen
+            name="BusinessHome"
+            component={BusinessHome}
+            options={{ headerShown: false }}
+          />
+        )
       ) : (
         <>
           <Stack.Screen
