@@ -1,13 +1,13 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
-import { useAuth } from '../../helpers/contexts/AuthContext';
-import { RootStackParamList } from '../../helpers/utils/types';
-import BusinessSignUp from '../../screens/auth/BusinessSignUp';
-import LogIn from '../../screens/auth/LogIn';
-import UserSignUp from '../../screens/auth/UserSignUp';
-import BusinessHome from '../../screens/business/BusinessHome';
-import Home from '../../screens/user/Home';
+import UserTabNavigator from './user/UserTabNavigator';
+import { useAuth } from '../helpers/contexts/AuthContext';
+import { RootStackParamList } from '../helpers/utils/types';
+import BusinessSignUp from '../screens/auth/BusinessSignUp';
+import LogIn from '../screens/auth/LogIn';
+import UserSignUp from '../screens/auth/UserSignUp';
+import BusinessHome from '../screens/business/BusinessHome';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -18,7 +18,11 @@ const RootNavigator = () => {
     <Stack.Navigator>
       {role ? (
         role === 'USER' ? (
-          <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          <Stack.Screen
+            name="UserStack"
+            component={UserTabNavigator}
+            options={{ headerShown: false }}
+          />
         ) : (
           <Stack.Screen
             name="BusinessHome"

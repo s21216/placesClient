@@ -2,9 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { useAuth } from '../../helpers/contexts/AuthContext';
-import { HomeProps } from '../../helpers/utils/types';
 
-const Home = ({ navigation }: HomeProps) => {
+const Home = () => {
   const { currentUser, role, signOut } = useAuth();
   const onSignOutPress = async () => {
     await signOut();

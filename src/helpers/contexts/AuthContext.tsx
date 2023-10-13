@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<string | null>();
   const [loading, setLoading] = useState(true);
 
-  const logInMutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: logInFn,
     onSuccess: (data) => {
       setRole(data.data.role);
@@ -112,12 +112,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
       if (user) {
         setCurrentUser(user);
-        logInMutation.mutate();
+        mutate();
       }
     });
     setLoading(false);
     return unsubscribe;
-  }, []);
+  }, [mutate]);
 
   const value: AuthContextType = {
     currentUser,

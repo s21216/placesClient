@@ -4,9 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import RootNavigator from './src/components/navigators/RootNavigator';
 import { theme } from './src/helpers/config/theme';
 import { AuthProvider } from './src/helpers/contexts/AuthContext';
+import RootNavigator from './src/navigators/RootNavigator';
 
 const queryClient = new QueryClient();
 
