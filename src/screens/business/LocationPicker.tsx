@@ -1,11 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 
-import Map from '../../components/Map';
+import SearchScreen from '../user/searchTab/SearchScreen';
 
 const LocationPicker = () => {
   return (
     <View>
-      <Map />
+      <SearchScreen />
     </View>
   );
 };

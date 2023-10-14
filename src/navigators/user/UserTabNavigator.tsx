@@ -9,7 +9,7 @@ const Tab = createBottomTabNavigator<UserNavigatorParamList>();
 
 function UserTabNavigator() {
   return (
-    <Tab.Navigator initialRouteName="SearchTab">
+    <Tab.Navigator initialRouteName="Map">
       <Tab.Screen
         name="HomeTab"
         component={Home}

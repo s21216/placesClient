@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 
 type AutocompleteProps = {
@@ -10,12 +10,16 @@ type AutocompleteProps = {
 };
 
 const SearchAutocomplete = ({ data, onSuggestionClick }: AutocompleteProps) => {
+  const onListItemClick = (item: string) => {
+    onSuggestionClick(item);
+    Keyboard.dismiss();
+  };
   return (
     <View style={styles.full}>
       <FlashList
         data={data}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => onSuggestionClick(item)}>
+          <TouchableOpacity onPress={() => onListItemClick(item)}>
             <View
               style={{
                 flex: 1,
@@ -31,6 +35,8 @@ const SearchAutocomplete = ({ data, onSuggestionClick }: AutocompleteProps) => {
           </TouchableOpacity>
         )}
         estimatedItemSize={5}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
       />
     </View>
   );

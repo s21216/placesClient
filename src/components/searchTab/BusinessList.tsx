@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, Card, Divider } from 'react-native-paper';
 
 import { BusinessSearchResponse } from '../../api/search';

@@ -1,9 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Searchbar } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRef, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+import MapView from 'react-native-maps';
+import { Searchbar } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from 'use-debounce';
 
 import {
@@ -11,42 +12,26 @@ import {
   autocompleteBusinessSearch,
   searchForBusinesses,
 } from '../../../api/search';
-import BusinessList from '../../../components/searchTab/BusinessList';
 import SearchAutocomplete from '../../../components/searchTab/SearchAutocomplete';
-import { StartProps } from '../../../helpers/utils/types';
 
-const SearchScreen = ({ navigation }: StartProps) => {
-  const [isSearchBoxActive, setIsSearchBoxActive] = useState(false);
+const SearchScreen = () => {
+  const insets = useSafeAreaInsets();
+  const searchBarRef = useRef<TextInput>(null);
+  const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [location, setLocation] = useState('');
-
-  const onChangeSearchBar = (query: string) => {
-    setIsSearchBoxActive(true);
-    setSearchQuery(query);
-  };
-  const onChangeLocation = (location: string) => setLocation(location);
-
-  const onSuggestionClick = (suggestion: string) => {
-    setIsSearchBoxActive(false);
-    setSearchQuery(suggestion);
-    console.log(suggestion);
-    mutate({ searchQuery: suggestion, searchBody });
-  };
-
-  const onSubmitSearch = () => {
-    setIsSearchBoxActive(false);
-    mutate({ searchQuery, searchBody });
-  };
-
   const [autocompleteValue] = useDebounce(searchQuery, 500);
 
-  const { mutate, data, isLoading, isSuccess } = useMutation({
-    mutationFn: searchForBusinesses,
-  });
+  const onChangeSearchBar = (query: string) => {
+    setSearchQuery(query);
+  };
 
   const autocompleteQuery = useQuery({
     queryKey: ['autocomplete', autocompleteValue],
     queryFn: () => autocompleteBusinessSearch(autocompleteValue),
+  });
+
+  const searchMutation = useMutation({
+    mutationFn: searchForBusinesses,
   });
 
   const searchBody: SearchRequest = {
@@ -59,42 +44,64 @@ const SearchScreen = ({ navigation }: StartProps) => {
     },
   };
 
+  const onSuggestionClick = (suggestion: string) => {
+    setIsSearchBarActive(false);
+    setSearchQuery(suggestion);
+    console.log(suggestion);
+    searchMutation.mutate({ searchQuery: suggestion, searchBody });
+  };
+
+  const toggleSearchScreen = (isOn: boolean) => {
+    if (isOn) {
+      searchBarRef?.current?.focus();
+    } else {
+      searchBarRef?.current?.blur();
+    }
+    setIsSearchBarActive(isOn);
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <MapView
+        style={[styles.mapview, isSearchBarActive && { display: 'none' }]}
+        initialRegion={{
+          latitude: 52.2297,
+          longitude: 21.0122,
+          latitudeDelta: 0.08,
+          longitudeDelta: 0.08,
+        }}
+      />
+      <View
+        style={[
+          styles.searchbarContainer,
+          { paddingTop: insets.top },
+          isSearchBarActive && { height: '100%' },
+        ]}>
         <Searchbar
+          ref={searchBarRef}
           inputStyle={{ alignSelf: 'center' }}
-          mode="bar"
-          style={styles.searchbar}
-          placeholder="Restaurants, categories"
-          onChangeText={onChangeSearchBar}
+          icon={() =>
+            isSearchBarActive ? (
+              <Ionicons name="arrow-back" size={24} />
+            ) : (
+              <Ionicons name="search" size={24} />
+            )
+          }
+          onIconPress={() => toggleSearchScreen(!isSearchBarActive)}
+          onPressIn={() => !isSearchBarActive && toggleSearchScreen(!isSearchBarActive)}
+          placeholder="Search for restaurant, bar etc."
           value={searchQuery}
-          onSubmitEditing={() => onSubmitSearch()}
+          onChangeText={onChangeSearchBar}
+          onSubmitEditing={() => {}}
         />
-        <Searchbar
-          inputStyle={{ alignSelf: 'center' }}
-          mode="bar"
-          style={styles.searchbar}
-          icon={() => <Ionicons name="location" color="#4285F4" size={20} />}
-          placeholder="neighbourhood, city or postal code"
-          onChangeText={onChangeLocation}
-          value={location}
-          // onSubmitEditing={() => mutate({ searchQuery, searchBody })}
-        />
-        {isLoading && (
-          <View style={{ flex: 1, justifyContent: 'center' }}>
-            <ActivityIndicator animating size="large" />
-          </View>
-        )}
-        {isSearchBoxActive && autocompleteQuery.isSuccess && (
+        {isSearchBarActive && autocompleteQuery.isSuccess && (
           <SearchAutocomplete
             data={autocompleteQuery.data.data}
             onSuggestionClick={(suggestion) => onSuggestionClick(suggestion)}
           />
         )}
-        {isSuccess && !isSearchBoxActive && <BusinessList searchResults={data?.data} />}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -103,26 +110,13 @@ export default SearchScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
   },
-  full: {
-    height: '100%',
-    width: '100%',
+  mapview: {
+    flex: 1,
   },
-  searchbar: {
+  searchbarContainer: {
+    position: 'absolute',
     width: '95%',
-    height: 45,
-    padding: 0,
-    marginBottom: 5,
-  },
-  card: {
     alignSelf: 'center',
-    width: '90%',
-    margin: 5,
-    // backgroundColor: 'rgb(242, 242, 242)',
-    backgroundColor: 'gray',
-    justifyContent: 'center',
   },
 });

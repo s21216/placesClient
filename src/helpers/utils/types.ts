@@ -18,19 +18,16 @@ export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'Business
 export type UserNavigatorParamList = {
   HomeTab: undefined;
   SearchTab: undefined;
+  Map: undefined;
 };
 
 export type HomeTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'HomeTab'>;
 export type SearchTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'SearchTab'>;
 
 export type SearchTabParamList = {
-  Start: undefined;
-  BusinessList: undefined;
-  BusinessMap: undefined;
+  SearchScreen: undefined;
 };
 
-export type StartProps = StackScreenProps<SearchTabParamList, 'Start'>;
-export type BusinessListProps = StackScreenProps<SearchTabParamList, 'BusinessList'>;
-export type BusinessMap = StackScreenProps<SearchTabParamList, 'BusinessMap'>;
+export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScreen'>;
 
 export type ValidUrl = keyof paths;
