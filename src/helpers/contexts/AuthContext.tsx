@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import * as SplashScreen from 'expo-splash-screen';
 import {
   User,
   createUserWithEmailAndPassword,
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<string | null>();
   const [loading, setLoading] = useState(true);
 
-  const { mutate } = useMutation({
+  const { mutate, data } = useMutation({
     mutationFn: logInFn,
     onSuccess: (data) => {
       setRole(data.data.role);
@@ -108,14 +109,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    setLoading(true);
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
       if (user) {
-        setCurrentUser(user);
         mutate();
+        setCurrentUser(user);
+        setLoading(false);
       }
+      SplashScreen.hideAsync();
     });
-    setLoading(false);
     return unsubscribe;
   }, [mutate]);
 

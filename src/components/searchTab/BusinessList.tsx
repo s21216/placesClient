@@ -1,14 +1,19 @@
-import { FlashList } from '@shopify/flash-list';
-import { StyleSheet, View } from 'react-native';
+import { RefObject } from 'react';
+import { StyleSheet } from 'react-native';
+import ActionSheet, { ActionSheetRef, useScrollHandlers } from 'react-native-actions-sheet';
+import { FlatList } from 'react-native-gesture-handler';
 import { Avatar, Card, Divider } from 'react-native-paper';
 
 import { BusinessSearchResponse } from '../../api/search';
 
 type Props = {
+  hide: boolean;
   searchResults?: BusinessSearchResponse;
+  businessListRef: RefObject<ActionSheetRef>;
 };
 
-const BusinessList = ({ searchResults }: Props) => {
+const BusinessList = ({ hide, searchResults, businessListRef }: Props) => {
+  const scrollHandlers = useScrollHandlers<FlatList>('scrollview-1', businessListRef);
   const results = searchResults?.results;
 
   const RightContent = (score: number) => (
@@ -16,24 +21,29 @@ const BusinessList = ({ searchResults }: Props) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlashList
+    <ActionSheet
+      ref={businessListRef}
+      containerStyle={hide ? { height: '0%' } : { height: '85%' }}
+      snapPoints={[20, 60]}
+      initialSnapIndex={1}
+      gestureEnabled
+      drawUnderStatusBar={false}
+      isModal={false}
+      backgroundInteractionEnabled
+      keyboardHandlerEnabled={false}>
+      <FlatList
         data={results}
         renderItem={({ item }) => (
           <>
             <Card key={item.firebaseUid} style={styles.card} mode="contained">
-              <Card.Title
-                title={item.name}
-                subtitle={item.cuisine || 'cuisine'}
-                right={() => RightContent(item.score!)}
-              />
+              <Card.Title title={item.name} right={() => RightContent(item.score!)} />
             </Card>
             <Divider />
           </>
         )}
-        estimatedItemSize={2}
+        {...scrollHandlers}
       />
-    </View>
+    </ActionSheet>
   );
 };
 
@@ -41,15 +51,13 @@ export default BusinessList;
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    width: '100%',
+    flex: 1,
   },
   card: {
     alignSelf: 'center',
     width: '90%',
     margin: 5,
-    // backgroundColor: 'rgb(242, 242, 242)',
-    backgroundColor: 'gray',
+    backgroundColor: 'white',
   },
   score: {
     marginRight: 10,

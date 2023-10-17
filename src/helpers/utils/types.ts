@@ -18,7 +18,6 @@ export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'Business
 export type UserNavigatorParamList = {
   HomeTab: undefined;
   SearchTab: undefined;
-  Map: undefined;
 };
 
 export type HomeTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'HomeTab'>;
