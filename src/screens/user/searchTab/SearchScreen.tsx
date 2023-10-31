@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { ActionSheetRef } from 'react-native-actions-sheet';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Searchbar } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from 'use-debounce';
@@ -85,8 +85,7 @@ const SearchScreen = () => {
         business.firebaseUid === undefined ? '' : business.firebaseUid
       );
       mapRef.current?.fitToSuppliedMarkers(markers!, {
-        // TODO doesn't work with apple maps. Replace with google maps?
-        edgePadding: { top: 100, bottom: 100, left: 0, right: 0 },
+        edgePadding: { top: 150, bottom: 450, left: 50, right: 50 },
       });
     }
   }, [searchMutation.data?.data.results, searchMutation.isSuccess]);
@@ -94,8 +93,10 @@ const SearchScreen = () => {
   return (
     <View style={styles.container}>
       <MapView
+        provider={PROVIDER_GOOGLE}
+        customMapStyle={mapStyle}
         ref={mapRef}
-        style={[styles.mapview]}
+        style={styles.mapview}
         initialRegion={{
           latitude: 52.2297,
           longitude: 21.0122,
@@ -141,6 +142,7 @@ const SearchScreen = () => {
           onSubmitEditing={() => onSearchSubmitClick()}
           onClearIconPress={() => {
             actionSheetRef.current?.hide();
+            searchMutation.reset();
           }}
         />
         {isSearchBarActive && autocompleteQuery.isSuccess && (
@@ -160,6 +162,18 @@ const SearchScreen = () => {
 };
 
 export default SearchScreen;
+
+const mapStyle = [
+  {
+    featureType: 'poi.business',
+    elementType: 'labels.icon',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+];
 
 const styles = StyleSheet.create({
   container: {

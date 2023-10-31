@@ -32,6 +32,7 @@ const BusinessList = ({ hide, searchResults, businessListRef }: Props) => {
       backgroundInteractionEnabled
       keyboardHandlerEnabled={false}>
       <FlatList
+        nestedScrollEnabled
         data={results}
         renderItem={({ item }) => (
           <>
