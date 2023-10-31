@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<string | null>();
   const [loading, setLoading] = useState(true);
 
-  const { mutate, data } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: logInFn,
     onSuccess: (data) => {
       setRole(data.data.role);
@@ -130,5 +130,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     businessSignUp,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

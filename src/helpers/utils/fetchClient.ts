@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 
 const fetchClient = () => {
   const defaultOptions = {
-    baseURL: 'http://localhost:8080',
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
     headers: {
       'Content-Type': 'application/json',
     },
