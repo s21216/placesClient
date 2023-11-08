@@ -38,5 +38,9 @@ module.exports = {
         projectId: 'c5959b58-9172-48a4-8181-a0aad176fb44',
       },
     },
+    plugins: [
+      'expo-location',
+      { locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.' },
+    ],
   },
 };
