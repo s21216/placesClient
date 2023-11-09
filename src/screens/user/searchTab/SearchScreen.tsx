@@ -1,39 +1,23 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import * as Location from 'expo-location';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import { ActionSheetRef } from 'react-native-actions-sheet';
 import {
   GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
+  GooglePlacesAutocompleteRef,
 } from 'react-native-google-places-autocomplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Text, Button } from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDebounce } from 'use-debounce';
-import { z } from 'zod';
 
-import {
-  SearchRequest,
-  autocompleteBusinessSearch,
-  searchForBusinesses,
-} from '../../../api/search';
-
-import FormSearchBar from '../../../components/inputs/FormSearchBar';
+import { autocompleteBusinessSearch, searchForBusinesses } from '../../../api/search';
 import BusinessList from '../../../components/searchTab/BusinessList';
 import SearchAutocomplete from '../../../components/searchTab/SearchAutocomplete';
-import FormInput from '../../../components/inputs/FormInput';
-import FormLocationPicker from '../../../components/inputs/FormLocationPicker';
-
-const schema = z.object({
-  searchQuery: z.string(),
-  location: z.string().min(1),
-});
-type FormData = z.infer<typeof schema>;
 
 const SearchScreen = () => {
   const insets = useSafeAreaInsets();
@@ -43,16 +27,9 @@ const SearchScreen = () => {
   const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [autocompleteValue] = useDebounce(searchQuery, 500);
+  const [isAutocompleteVisible, setIsAutocompleteVisible] = useState(true);
+  const locationPickerRef = useRef<GooglePlacesAutocompleteRef>(null);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    defaultValues: { searchQuery: '', location: '' },
-    resolver: zodResolver(schema),
-  });
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [location, setLocation] = useState<Location.LocationObject | null>();
@@ -60,7 +37,11 @@ const SearchScreen = () => {
     description: 'Current location',
     geometry: { location: { lat: 0, lng: 0 } },
   });
-  const [searchLocation, setSearchLocation] = useState({ latitude: 52, longitude: 21 });
+  const [searchLocation, setSearchLocation] = useState({
+    description: '',
+    latitude: 52,
+    longitude: 21,
+  });
 
   useEffect(() => {
     checkCurrentLocation();
@@ -82,16 +63,18 @@ const SearchScreen = () => {
     }));
   };
 
-  const onSearchLocationClick = useCallback(
+  const onLocationSuggestionClick = useCallback(
     async (data: GooglePlaceData, details: GooglePlaceDetail) => {
       if (data.description === 'Current location') {
         await checkCurrentLocation();
         setSearchLocation(() => ({
+          description: data.description,
           latitude: currentLocationOption.geometry.location.lat,
           longitude: currentLocationOption.geometry.location.lng,
         }));
       } else {
         setSearchLocation(() => ({
+          description: data.description,
           latitude: details.geometry.location.lat,
           longitude: details.geometry.location.lng,
         }));
@@ -99,10 +82,6 @@ const SearchScreen = () => {
     },
     [currentLocationOption.geometry.location.lat, currentLocationOption.geometry.location.lng]
   );
-
-  const onChangeSearchBar = (query: string) => {
-    setSearchQuery(query);
-  };
 
   const autocompleteQuery = useQuery({
     queryKey: ['autocomplete', autocompleteValue],
@@ -114,6 +93,9 @@ const SearchScreen = () => {
   });
 
   const toggleSearchScreen = (isOn: boolean) => {
+    if (Keyboard.isVisible()) {
+      Keyboard.dismiss();
+    }
     if (isOn) {
       searchBarRef.current?.focus();
     } else {
@@ -123,9 +105,9 @@ const SearchScreen = () => {
   };
 
   const onSearchSubmitClick = useCallback(
-    async (data: FormData) => {
+    async () => {
       await searchMutation.mutateAsync({
-        searchQuery: data.searchQuery,
+        searchQuery,
         searchBody: {
           pageSize: 10,
           pageNumber: 0,
@@ -143,27 +125,38 @@ const SearchScreen = () => {
     [searchMutation.mutateAsync, searchLocation.latitude, searchLocation.longitude]
   );
 
-  //TODO Fix autocomplete
-  const onSuggestionClick = async (suggestion: string) => {
-    setSearchQuery(suggestion);
-    await searchMutation.mutateAsync({
-      searchQuery: suggestion,
-      searchBody: {
-        pageSize: 10,
-        pageNumber: 0,
-        filters: {
-          latitude: searchLocation.latitude,
-          longitude: searchLocation.longitude,
-          distance: 5,
-        },
-      },
-    });
-    setIsSearchBarActive(false);
-    actionSheetRef.current?.show();
-  };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [searchMutation.mutateAsync, searchLocation.latitude, searchLocation.longitude]
-  // );
+  const onSuggestionClick = useCallback(
+    async (suggestion: string) => {
+      setSearchQuery(suggestion);
+      console.log(searchLocation.description);
+      if (searchLocation.description === '') {
+        locationPickerRef.current?.focus();
+      } else {
+        await searchMutation.mutateAsync({
+          searchQuery: suggestion,
+          searchBody: {
+            pageSize: 10,
+            pageNumber: 0,
+            filters: {
+              latitude: searchLocation.latitude,
+              longitude: searchLocation.longitude,
+              distance: 5,
+            },
+          },
+        });
+        Keyboard.dismiss();
+        setIsSearchBarActive(false);
+        actionSheetRef.current?.show();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      searchLocation.description,
+      searchLocation.latitude,
+      searchLocation.longitude,
+      searchMutation.mutateAsync,
+    ]
+  );
 
   useEffect(() => {
     if (searchMutation.isSuccess) {
@@ -209,12 +202,10 @@ const SearchScreen = () => {
           { paddingTop: insets.top },
           isSearchBarActive && { height: '100%', backgroundColor: 'white' },
         ]}>
-        //TODO fix autocomplete. Modify searchQuery state
-        <FormSearchBar
-          name="searchQuery"
-          control={control}
-          value="null"
-          innerRef={searchBarRef}
+        <Searchbar
+          value={searchQuery}
+          ref={searchBarRef}
+          style={{ width: '95%', alignSelf: 'center' }}
           inputStyle={{ alignSelf: 'center' }}
           icon={() =>
             isSearchBarActive ? (
@@ -223,64 +214,63 @@ const SearchScreen = () => {
               <Ionicons name="search" size={24} />
             )
           }
+          onChangeText={(query: string) => setSearchQuery(query)}
           onIconPress={() => toggleSearchScreen(!isSearchBarActive)}
           onPressIn={() => !isSearchBarActive && toggleSearchScreen(!isSearchBarActive)}
+          onFocus={() => setIsAutocompleteVisible(true)}
           placeholder="Search for restaurant, bar etc."
-          onSubmitEditing={handleSubmit(onSearchSubmitClick)}
+          onSubmitEditing={onSearchSubmitClick}
           onClearIconPress={() => {
             actionSheetRef.current?.hide();
             searchMutation.reset();
           }}
         />
-        <Controller
-          name="location"
-          control={control}
-          render={({ field: { onChange, name } }) => (
-            <GooglePlacesAutocomplete
-              styles={{
-                container: {
-                  width: '95%',
-                  alignSelf: 'center',
-                  height: 'auto',
-                  display: isSearchBarActive ? 'block' : 'none',
-                },
-                textInput: {
-                  backgroundColor: '#e8e6e6',
-                  alignSelf: 'center',
-                  borderRadius: 50,
-                  height: 55,
-                  color: 'black',
-                  marginTop: 5,
-                },
-                predefinedPlacesDescription: {
-                  color: '#1877F2',
-                },
-              }}
-              enablePoweredByContainer={false}
-              debounce={500}
-              placeholder="Location"
-              fetchDetails
-              onPress={(data, details) => {
-                // 'details' is provided when fetchDetails = true
-                searchBarRef.current?.focus();
-                onChange(data.description);
-                onSearchLocationClick(data, details!);
-              }}
-              query={{
-                key: process.env.EXPO_PUBLIC_MAPS_KEY,
-                language: 'en',
-                type: 'geocode',
-              }}
-              predefinedPlaces={[currentLocationOption]}
-              textInputProps={{
-                inputComp: <FormLocationPicker name={name} control={control} />,
-                // returnKeyType: 'search',
-              }}
-            />
-          )}
+        <GooglePlacesAutocomplete
+          styles={{
+            container: {
+              position: 'absolute',
+              width: '95%',
+              alignSelf: 'center',
+              height: '100%',
+              display: isSearchBarActive ? 'block' : 'none',
+              marginTop: 100,
+              marginBottom: 30,
+            },
+            textInput: {
+              backgroundColor: '#e8e6e6',
+              alignSelf: 'center',
+              borderRadius: 50,
+              height: 55,
+              color: 'black',
+              marginTop: 5,
+            },
+            predefinedPlacesDescription: {
+              color: '#1877F2',
+            },
+          }}
+          enablePoweredByContainer={false}
+          debounce={500}
+          placeholder="Location"
+          fetchDetails
+          onPress={(data, details) => {
+            onLocationSuggestionClick(data, details!);
+          }}
+          query={{
+            key: process.env.EXPO_PUBLIC_MAPS_KEY,
+            language: 'en',
+            type: 'geocode',
+          }}
+          predefinedPlaces={[currentLocationOption]}
+          predefinedPlacesAlwaysVisible
+          textInputProps={{
+            // inputComp: FormLocationPicker,
+            ref: locationPickerRef,
+            returnKeyType: 'search',
+            onFocus: () => setIsAutocompleteVisible(false),
+            onSubmitEditing: () => onSearchSubmitClick(),
+          }}
         />
-        <Text>{errors.location?.message}</Text>
-        {isSearchBarActive && autocompleteQuery.isSuccess && (
+        {isSearchBarActive && autocompleteQuery.isSuccess && isAutocompleteVisible && (
           <SearchAutocomplete
             data={autocompleteQuery.data.data}
             onSuggestionClick={(suggestion) => onSuggestionClick(suggestion)}
@@ -321,5 +311,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     alignSelf: 'center',
+  },
+  locationContainer: {
+    // marginTop: 30,
+    height: '100%',
   },
 });

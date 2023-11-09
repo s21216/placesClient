@@ -1,18 +1,17 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-paper';
 
 type AutocompleteProps = {
-  data: string[];
+  data?: string[];
   onSuggestionClick: (suggestion: string) => void;
 };
 
 const SearchAutocomplete = ({ data, onSuggestionClick }: AutocompleteProps) => {
   const onListItemClick = (item: string) => {
     onSuggestionClick(item);
-    Keyboard.dismiss();
   };
   return (
     <View style={styles.full}>
@@ -46,6 +45,7 @@ export default SearchAutocomplete;
 
 const styles = StyleSheet.create({
   full: {
+    marginTop: 60,
     height: '100%',
     width: '100%',
   },
