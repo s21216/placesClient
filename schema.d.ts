@@ -3,27 +3,28 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-  '/businesses/search': {
-    post: operations['searchBusinessesFuzzy'];
+  "/businesses/search": {
+    post: operations["searchBusinessesFuzzy"];
   };
-  '/auth/users/signup': {
-    post: operations['createUser'];
+  "/auth/users/signup": {
+    post: operations["createUser"];
   };
-  '/auth/signin': {
-    post: operations['signIn'];
+  "/auth/signin": {
+    post: operations["signIn"];
   };
-  '/auth/businesses/signup': {
-    post: operations['createBusiness'];
+  "/auth/businesses/signup": {
+    post: operations["createBusiness"];
   };
-  '/businesses/{businessId}': {
-    get: operations['getBusinessById'];
+  "/businesses/{businessId}": {
+    get: operations["getBusinessById"];
   };
-  '/businesses/search/autocomplete': {
-    get: operations['autocomplete'];
+  "/businesses/search/autocomplete": {
+    get: operations["autocomplete"];
   };
-  '/businesses/reindex': {
-    get: operations['reindex'];
+  "/businesses/reindex": {
+    get: operations["reindex"];
   };
 }
 
@@ -33,7 +34,7 @@ export interface components {
   schemas: {
     SearchFilters: {
       /** @enum {string} */
-      cost?: 'INEXPENSIVE' | 'MODERATE' | 'EXPENSIVE' | 'VERY_EXPENSIVE';
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
       /** Format: double */
       longitude?: number;
       /** Format: double */
@@ -48,8 +49,36 @@ export interface components {
       pageNumber?: number;
       orderBy?: string;
       /** @enum {string} */
-      sortOrder?: 'ASC' | 'DESC';
-      filters?: components['schemas']['SearchFilters'];
+      sortOrder?: "ASC" | "DESC";
+      filters?: components["schemas"]["SearchFilters"];
+    };
+    Business: {
+      /** Format: int64 */
+      id?: number;
+      firebaseUid?: string;
+      name?: string;
+      profilePictureUrl?: string;
+      email?: string;
+      phoneNumber?: string;
+      address?: string;
+      zipCode?: string;
+      district?: string;
+      city?: string;
+      country?: string;
+      description?: string;
+      type?: string;
+      /** @enum {string} */
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
+      /** Format: double */
+      score?: number;
+      /** Format: double */
+      locationLatitude?: number;
+      /** Format: double */
+      locationLongitude?: number;
+      /** Format: date */
+      joinDate?: string;
+      categories?: components["schemas"]["Category"][];
+      reviews?: components["schemas"]["Review"][];
     };
     /** @description Lista elementów */
     BusinessResponse: {
@@ -59,16 +88,23 @@ export interface components {
       phoneNumber?: string;
       profilePictureUrl?: string;
       description?: string;
-      cuisine?: string;
+      type?: string;
+      categories?: components["schemas"]["Category"][];
       /** @enum {string} */
-      cost?: 'INEXPENSIVE' | 'MODERATE' | 'EXPENSIVE' | 'VERY_EXPENSIVE';
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
       /** Format: double */
       score?: number;
-      location?: components['schemas']['Location'];
+      location?: components["schemas"]["Location"];
       /** Format: date */
       joinDate?: string;
       /** @enum {string} */
-      role?: 'USER' | 'BUSINESS';
+      role?: "USER" | "BUSINESS";
+    };
+    Category: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+      businesses?: components["schemas"]["Business"][];
     };
     Location: {
       country?: string;
@@ -77,10 +113,11 @@ export interface components {
       city?: string;
       district?: string;
       /** Format: double */
-      longitude?: number;
-      /** Format: double */
       latitude?: number;
+      /** Format: double */
+      longitude?: number;
     };
+    Review: Record<string, never>;
     SearchResponseBusinessResponse: {
       /**
        * Format: int32
@@ -95,7 +132,7 @@ export interface components {
        */
       pageNumber?: number;
       /** @description Lista elementów */
-      results?: components['schemas']['BusinessResponse'][];
+      results?: components["schemas"]["BusinessResponse"][];
     };
     UserRequest: {
       email?: string;
@@ -106,7 +143,7 @@ export interface components {
       email?: string;
       firebaseUid?: string;
       /** @enum {string} */
-      role?: 'USER' | 'BUSINESS';
+      role?: "USER" | "BUSINESS";
     };
     BusinessRequest: {
       email?: string;
@@ -126,6 +163,7 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+
   searchBusinessesFuzzy: {
     parameters: {
       query: {
@@ -134,20 +172,20 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SearchRequest'];
+        "application/json": components["schemas"]["SearchRequest"];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          '*/*': components['schemas']['SearchResponseBusinessResponse'];
+          "*/*": components["schemas"]["SearchResponseBusinessResponse"];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -160,20 +198,20 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserRequest'];
+        "application/json": components["schemas"]["UserRequest"];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          '*/*': components['schemas']['AuthResponse'];
+          "*/*": components["schemas"]["AuthResponse"];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -188,13 +226,13 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          '*/*': components['schemas']['AuthResponse'];
+          "*/*": components["schemas"]["AuthResponse"];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -207,20 +245,20 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['BusinessRequest'];
+        "application/json": components["schemas"]["BusinessRequest"];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          '*/*': components['schemas']['AuthResponse'];
+          "*/*": components["schemas"]["AuthResponse"];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -235,13 +273,13 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          '*/*': components['schemas']['BusinessResponse'];
+          "*/*": components["schemas"]["BusinessResponse"];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -256,13 +294,13 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          '*/*': string[];
+          "*/*": string[];
         };
       };
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };
@@ -276,7 +314,7 @@ export interface operations {
       /** @description Bad Request */
       400: {
         content: {
-          '*/*': string;
+          "*/*": string;
         };
       };
     };

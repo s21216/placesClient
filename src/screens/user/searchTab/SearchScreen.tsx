@@ -2,8 +2,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import * as Location from 'expo-location';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import { ActionSheetRef } from 'react-native-actions-sheet';
+import { TextInput } from 'react-native-gesture-handler';
 import {
   GooglePlaceData,
   GooglePlaceDetail,
@@ -18,8 +19,9 @@ import { useDebounce } from 'use-debounce';
 import { autocompleteBusinessSearch, searchForBusinesses } from '../../../api/search';
 import BusinessList from '../../../components/searchTab/BusinessList';
 import SearchAutocomplete from '../../../components/searchTab/SearchAutocomplete';
+import { SearchScreenProps } from '../../../helpers/utils/navigationTypes';
 
-const SearchScreen = () => {
+const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
   const insets = useSafeAreaInsets();
   const searchBarRef = useRef<TextInput>(null);
   const mapRef = useRef<MapView>(null);
@@ -128,7 +130,6 @@ const SearchScreen = () => {
   const onSuggestionClick = useCallback(
     async (suggestion: string) => {
       setSearchQuery(suggestion);
-      console.log(searchLocation.description);
       if (searchLocation.description === '') {
         locationPickerRef.current?.focus();
       } else {
@@ -281,6 +282,8 @@ const SearchScreen = () => {
         hide={isSearchBarActive}
         businessListRef={actionSheetRef}
         searchResults={searchMutation.data?.data}
+        navigation={navigation}
+        route={route}
       />
     </View>
   );
@@ -313,7 +316,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   locationContainer: {
-    // marginTop: 30,
     height: '100%',
   },
 });

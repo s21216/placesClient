@@ -2,9 +2,11 @@ import { RefObject } from 'react';
 import { StyleSheet } from 'react-native';
 import ActionSheet, { ActionSheetRef, useScrollHandlers } from 'react-native-actions-sheet';
 import { FlatList } from 'react-native-gesture-handler';
-import { Avatar, Card, Divider } from 'react-native-paper';
+import { Avatar, Card, Divider, Text } from 'react-native-paper';
 
 import { BusinessSearchResponse } from '../../api/search';
+import { SearchScreenProps } from '../../helpers/utils/navigationTypes';
+import { Business, CostEnum } from '../../helpers/utils/types';
 
 type Props = {
   hide: boolean;
@@ -12,7 +14,9 @@ type Props = {
   businessListRef: RefObject<ActionSheetRef>;
 };
 
-const BusinessList = ({ hide, searchResults, businessListRef }: Props) => {
+type BusinessListProps = Props & SearchScreenProps;
+
+const BusinessList = ({ hide, searchResults, businessListRef, navigation }: BusinessListProps) => {
   const scrollHandlers = useScrollHandlers<FlatList>('scrollview-1', businessListRef);
   const results = searchResults?.results;
 
@@ -31,13 +35,23 @@ const BusinessList = ({ hide, searchResults, businessListRef }: Props) => {
       isModal={false}
       backgroundInteractionEnabled
       keyboardHandlerEnabled={false}>
-      <FlatList
+      <FlatList<Business>
         nestedScrollEnabled
         data={results}
         renderItem={({ item }) => (
           <>
-            <Card key={item.firebaseUid} style={styles.card} mode="contained">
+            <Card
+              key={item?.firebaseUid}
+              style={styles.card}
+              mode="contained"
+              onPress={() => navigation.navigate('Details', { businessId: item.firebaseUid! })}>
               <Card.Title title={item.name} right={() => RightContent(item.score!)} />
+              <Card.Content>
+                <Text>
+                  {item?.type} • {item?.location?.address}, {item?.location?.city} •{' '}
+                  {CostEnum[item?.cost!]}
+                </Text>
+              </Card.Content>
             </Card>
             <Divider />
           </>

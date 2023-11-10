@@ -3,7 +3,7 @@ import React from 'react';
 
 import UserTabNavigator from './user/UserTabNavigator';
 import { useAuth } from '../helpers/contexts/AuthContext';
-import { RootStackParamList } from '../helpers/utils/types';
+import { RootStackParamList } from '../helpers/utils/navigationTypes';
 import BusinessSignUp from '../screens/auth/BusinessSignUp';
 import LogIn from '../screens/auth/LogIn';
 import UserSignUp from '../screens/auth/UserSignUp';

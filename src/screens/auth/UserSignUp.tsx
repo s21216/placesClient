@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import FormInput from '../../components/inputs/FormInput';
 import { useAuth } from '../../helpers/contexts/AuthContext';
-import { UserSignUpProps } from '../../helpers/utils/types';
+import { UserSignUpProps } from '../../helpers/utils/navigationTypes';
 
 const schema = z.object({
   email: z.string().email(),

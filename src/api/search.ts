@@ -1,6 +1,6 @@
 import { components } from '../../schema';
 import fetchClient from '../helpers/utils/fetchClient';
-import { ValidUrl } from '../helpers/utils/types';
+import { ValidUrl } from '../helpers/utils/navigationTypes';
 
 export type SearchRequest = components['schemas']['SearchRequest'];
 

@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import SearchStack from './search/SearchStack';
-import { UserNavigatorParamList } from '../../helpers/utils/types';
+import { UserNavigatorParamList } from '../../helpers/utils/navigationTypes';
 import Home from '../../screens/user/Home';
 
 const Tab = createBottomTabNavigator<UserNavigatorParamList>();

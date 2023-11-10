@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import FormInput from '../../components/inputs/FormInput';
 import { useAuth } from '../../helpers/contexts/AuthContext';
-import { BusinessSignUpProps } from '../../helpers/utils/types';
+import { BusinessSignUpProps } from '../../helpers/utils/navigationTypes';
 
 const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
 
