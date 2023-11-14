@@ -26,9 +26,11 @@ export type SearchTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'Se
 export type SearchTabParamList = {
   SearchScreen: undefined;
   Details: { businessId: string };
+  Review: undefined;
 };
 
 export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScreen'>;
 export type DetailsProps = StackScreenProps<SearchTabParamList, 'Details'>;
+export type ReviewProps = StackScreenProps<SearchTabParamList, 'Review'>;
 
 export type ValidUrl = keyof paths;

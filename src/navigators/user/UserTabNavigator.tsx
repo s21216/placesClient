@@ -9,7 +9,7 @@ const Tab = createBottomTabNavigator<UserNavigatorParamList>();
 
 function UserTabNavigator() {
   return (
-    <Tab.Navigator initialRouteName="HomeTab">
+    <Tab.Navigator initialRouteName="HomeTab" screenOptions={{ tabBarHideOnKeyboard: true }}>
       <Tab.Screen
         name="HomeTab"
         component={Home}

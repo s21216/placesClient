@@ -45,9 +45,9 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
     longitude: 21,
   });
 
-  useEffect(() => {
-    checkCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   checkCurrentLocation();
+  // }, []);
 
   const checkCurrentLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -176,7 +176,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
         customMapStyle={mapStyle}
         ref={mapRef}
         style={styles.mapview}
-        showsUserLocation
+        // showsUserLocation
         initialRegion={{
           latitude: location?.coords.latitude ? location.coords.latitude : 52.2297,
           longitude: location?.coords.longitude ? location.coords.longitude : 21.0122,
@@ -261,7 +261,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
             language: 'en',
             type: 'geocode',
           }}
-          predefinedPlaces={[currentLocationOption]}
+          // predefinedPlaces={[currentLocationOption]}
           predefinedPlacesAlwaysVisible
           textInputProps={{
             // inputComp: FormLocationPicker,
