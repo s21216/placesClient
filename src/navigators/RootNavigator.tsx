@@ -16,7 +16,7 @@ const RootNavigator = () => {
 
   return (
     <Stack.Navigator>
-      {currentUser ? (
+      {role ? (
         role === 'USER' ? (
           <Stack.Screen
             name="UserStack"

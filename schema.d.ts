@@ -13,6 +13,9 @@ export interface paths {
     get: operations["getCheckInExists"];
     post: operations["createCheckIn"];
   };
+  "/businesses/{businessId}/reviews": {
+    post: operations["getReviews"];
+  };
   "/businesses/search": {
     post: operations["searchBusinessesFuzzy"];
   };
@@ -26,7 +29,7 @@ export interface paths {
     post: operations["createBusiness"];
   };
   "/users/{userId}/reviews": {
-    get: operations["getReviews"];
+    get: operations["getReviews_1"];
   };
   "/users/{userId}/checkIns": {
     get: operations["getVisited"];
@@ -37,9 +40,6 @@ export interface paths {
   };
   "/businesses/{businessId}": {
     get: operations["getBusinessById"];
-  };
-  "/businesses/{businessId}/reviews": {
-    get: operations["getReviews_1"];
   };
   "/businesses/search/autocomplete": {
     get: operations["autocomplete"];
@@ -57,14 +57,14 @@ export interface components {
       reviewId?: string;
       businessId?: string;
       /** Format: int32 */
-      rating?: number;
+      score?: number;
       description?: string;
     };
     Review: {
       /** Format: int64 */
       id?: number;
       /** Format: int32 */
-      rating?: number;
+      score?: number;
       description?: string;
       /** Format: date-time */
       createdAt?: string;
@@ -72,7 +72,7 @@ export interface components {
     CreateReviewRequest: {
       businessId?: string;
       /** Format: int32 */
-      rating?: number;
+      score?: number;
       description?: string;
     };
     CheckInRequest: {
@@ -88,6 +88,49 @@ export interface components {
       businessId?: string;
       /** Format: date-time */
       createdAt?: string;
+    };
+    PaginatedRequest: {
+      /** Format: int32 */
+      pageSize?: number;
+      /** Format: int32 */
+      pageNumber?: number;
+      orderBy?: string;
+      /** @enum {string} */
+      sortOrder?: "ASC" | "DESC";
+    };
+    PaginatedResponseReview: {
+      /**
+       * Format: int32
+       * @description Rozmiar strony
+       * @example 100
+       */
+      pageSize?: number;
+      /**
+       * Format: int32
+       * @description Numer strony
+       * @example 0
+       */
+      pageNumber?: number;
+      /**
+       * Format: int32
+       * @description Liczba elementów na stronie
+       * @example 5
+       */
+      numberOfElements?: number;
+      /**
+       * Format: int64
+       * @description Liczba wszystkich elementów
+       * @example 5
+       */
+      totalNumberOfElements?: number;
+      /**
+       * Format: int32
+       * @description Liczba stron
+       * @example 5
+       */
+      totalPages?: number;
+      /** @description Lista elementów */
+      results?: components["schemas"]["Review"][];
     };
     SearchFilters: {
       /** @enum {string} */
@@ -194,49 +237,6 @@ export interface components {
       email?: string;
       name?: string;
       phoneNumber?: string;
-    };
-    PaginatedRequest: {
-      /** Format: int32 */
-      pageSize?: number;
-      /** Format: int32 */
-      pageNumber?: number;
-      orderBy?: string;
-      /** @enum {string} */
-      sortOrder?: "ASC" | "DESC";
-    };
-    PaginatedResponseReview: {
-      /**
-       * Format: int32
-       * @description Rozmiar strony
-       * @example 100
-       */
-      pageSize?: number;
-      /**
-       * Format: int32
-       * @description Numer strony
-       * @example 0
-       */
-      pageNumber?: number;
-      /**
-       * Format: int32
-       * @description Liczba elementów na stronie
-       * @example 5
-       */
-      numberOfElements?: number;
-      /**
-       * Format: int64
-       * @description Liczba wszystkich elementów
-       * @example 5
-       */
-      totalNumberOfElements?: number;
-      /**
-       * Format: int32
-       * @description Liczba stron
-       * @example 5
-       */
-      totalPages?: number;
-      /** @description Lista elementów */
-      results?: components["schemas"]["Review"][];
     };
   };
   responses: never;
@@ -378,6 +378,44 @@ export interface operations {
       200: {
         content: {
           "*/*": components["schemas"]["CheckInResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getReviews: {
+    parameters: {
+      path: {
+        businessId: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaginatedRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["PaginatedResponseReview"];
         };
       };
       /** @description Bad Request */
@@ -547,7 +585,7 @@ export interface operations {
       };
     };
   };
-  getReviews: {
+  getReviews_1: {
     parameters: {
       path: {
         userId: string;
@@ -691,42 +729,6 @@ export interface operations {
       200: {
         content: {
           "*/*": components["schemas"]["BusinessResponse"];
-        };
-      };
-      /** @description Bad Request */
-      400: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        content: {
-          "*/*": string;
-        };
-      };
-      /** @description Not Found */
-      404: {
-        content: {
-          "*/*": string;
-        };
-      };
-    };
-  };
-  getReviews_1: {
-    parameters: {
-      query: {
-        request: components["schemas"]["PaginatedRequest"];
-      };
-      path: {
-        businessId: string;
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          "*/*": components["schemas"]["PaginatedResponseReview"];
         };
       };
       /** @description Bad Request */

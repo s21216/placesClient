@@ -2,8 +2,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { SearchTabParamList } from '../../../helpers/utils/navigationTypes';
 import BusinessDetails from '../../../screens/user/searchTab/BusinessDetails';
-import SearchScreen from '../../../screens/user/searchTab/SearchScreen';
 import ReviewScreen from '../../../screens/user/searchTab/ReviewScreen';
+import SearchScreen from '../../../screens/user/searchTab/SearchScreen';
 
 const Stack = createStackNavigator<SearchTabParamList>();
 
@@ -29,7 +29,6 @@ const SearchStack = () => {
           headerShown: true,
           headerTitle: 'Write review',
           headerBackTitleStyle: { color: 'black' },
-          headerStyle: { backgroundColor: 'white' },
         }}
       />
     </Stack.Navigator>

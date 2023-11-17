@@ -206,7 +206,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
         <Searchbar
           value={searchQuery}
           ref={searchBarRef}
-          style={{ width: '95%', alignSelf: 'center' }}
+          style={styles.searchbar}
           inputStyle={{ alignSelf: 'center' }}
           icon={() =>
             isSearchBarActive ? (
@@ -264,7 +264,6 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
           // predefinedPlaces={[currentLocationOption]}
           predefinedPlacesAlwaysVisible
           textInputProps={{
-            // inputComp: FormLocationPicker,
             ref: locationPickerRef,
             returnKeyType: 'search',
             onFocus: () => setIsAutocompleteVisible(false),
@@ -313,6 +312,10 @@ const styles = StyleSheet.create({
   searchbarContainer: {
     position: 'absolute',
     width: '100%',
+    alignSelf: 'center',
+  },
+  searchbar: {
+    width: '95%',
     alignSelf: 'center',
   },
   locationContainer: {
