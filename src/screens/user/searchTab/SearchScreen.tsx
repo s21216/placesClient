@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import * as Location from 'expo-location';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { Keyboard, Platform, StyleSheet, View } from 'react-native';
 import { ActionSheetRef } from 'react-native-actions-sheet';
 import { TextInput } from 'react-native-gesture-handler';
 import {
@@ -45,9 +45,9 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
     longitude: 21,
   });
 
-  useEffect(() => {
-    checkCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   checkCurrentLocation();
+  // }, []);
 
   const checkCurrentLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -80,6 +80,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
           latitude: details.geometry.location.lat,
           longitude: details.geometry.location.lng,
         }));
+        searchBarRef.current?.focus();
       }
     },
     [currentLocationOption.geometry.location.lat, currentLocationOption.geometry.location.lng]
@@ -164,7 +165,10 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
       const markers = searchMutation.data?.data.results?.map((business) => business.firebaseUid!);
       if (markers?.length! > 0)
         mapRef.current?.fitToSuppliedMarkers(markers!, {
-          edgePadding: { top: 150, bottom: 450, left: 50, right: 50 },
+          edgePadding:
+            Platform.OS === 'ios'
+              ? { top: 150, bottom: 450, left: 50, right: 50 }
+              : { top: 500, bottom: 1000, left: 100, right: 100 },
         });
     }
   }, [searchMutation.data?.data.results, searchMutation.isSuccess]);
@@ -176,7 +180,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
         customMapStyle={mapStyle}
         ref={mapRef}
         style={styles.mapview}
-        showsUserLocation
+        // showsUserLocation
         initialRegion={{
           latitude: location?.coords.latitude ? location.coords.latitude : 52.2297,
           longitude: location?.coords.longitude ? location.coords.longitude : 21.0122,
@@ -193,7 +197,10 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
               }}
               identifier={business.firebaseUid}
               title={business.name}
-              description={business.email}
+              description={business.location?.address}
+              onCalloutPress={() =>
+                navigation.navigate('Details', { businessId: business.firebaseUid! })
+              }
             />
           ))}
       </MapView>
@@ -206,7 +213,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
         <Searchbar
           value={searchQuery}
           ref={searchBarRef}
-          style={{ width: '95%', alignSelf: 'center' }}
+          style={styles.searchbar}
           inputStyle={{ alignSelf: 'center' }}
           icon={() =>
             isSearchBarActive ? (
@@ -234,7 +241,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
               alignSelf: 'center',
               height: '100%',
               display: isSearchBarActive ? 'block' : 'none',
-              marginTop: 100,
+              marginTop: 80,
               marginBottom: 30,
             },
             textInput: {
@@ -261,10 +268,9 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
             language: 'en',
             type: 'geocode',
           }}
-          predefinedPlaces={[currentLocationOption]}
+          // predefinedPlaces={[currentLocationOption]}
           predefinedPlacesAlwaysVisible
           textInputProps={{
-            // inputComp: FormLocationPicker,
             ref: locationPickerRef,
             returnKeyType: 'search',
             onFocus: () => setIsAutocompleteVisible(false),
@@ -313,6 +319,10 @@ const styles = StyleSheet.create({
   searchbarContainer: {
     position: 'absolute',
     width: '100%',
+    alignSelf: 'center',
+  },
+  searchbar: {
+    width: '95%',
     alignSelf: 'center',
   },
   locationContainer: {

@@ -32,7 +32,7 @@ export const theme = {
     elevation: {
       level0: 'transparent',
       level1: '#e8e6e6',
-      level2: 'rgb(244, 236, 248)',
+      level2: '#e8e6e6',
       level3: '#e8e6e6',
       level4: 'rgb(239, 229, 245)',
       level5: 'rgb(236, 226, 243)',

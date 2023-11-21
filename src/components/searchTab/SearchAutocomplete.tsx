@@ -16,6 +16,7 @@ const SearchAutocomplete = ({ data, onSuggestionClick }: AutocompleteProps) => {
   return (
     <View style={styles.full}>
       <FlashList
+        overScrollMode="always"
         data={data}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => onListItemClick(item)}>

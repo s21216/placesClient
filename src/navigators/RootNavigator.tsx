@@ -12,7 +12,7 @@ import BusinessHome from '../screens/business/BusinessHome';
 const Stack = createStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const { role } = useAuth();
+  const { currentUser, role } = useAuth();
 
   return (
     <Stack.Navigator>

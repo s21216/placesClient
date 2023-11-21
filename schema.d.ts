@@ -5,6 +5,17 @@
 
 
 export interface paths {
+  "/reviews": {
+    get: operations["getReview"];
+    put: operations["createOrUpdateReview"];
+  };
+  "/checkIns": {
+    get: operations["getCheckInExists"];
+    post: operations["createCheckIn"];
+  };
+  "/businesses/{businessId}/reviews": {
+    post: operations["getReviews"];
+  };
   "/businesses/search": {
     post: operations["searchBusinessesFuzzy"];
   };
@@ -16,6 +27,16 @@ export interface paths {
   };
   "/auth/businesses/signup": {
     post: operations["createBusiness"];
+  };
+  "/users/{userId}/reviews": {
+    get: operations["getReviews_1"];
+  };
+  "/users/{userId}/checkIns": {
+    get: operations["getVisited"];
+  };
+  "/reviews/{reviewId}": {
+    get: operations["getReview_1"];
+    delete: operations["deleteReview"];
   };
   "/businesses/{businessId}": {
     get: operations["getBusinessById"];
@@ -32,6 +53,92 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
+    CreateReviewRequest: {
+      businessId?: string;
+      /** Format: int32 */
+      score?: number;
+      description?: string;
+    };
+    PostOwner: {
+      firebaseUid?: string;
+      email?: string;
+      fullName?: string;
+    };
+    ReviewReply: {
+      /** Format: int64 */
+      id?: number;
+      description?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    ReviewResponse: {
+      /** Format: int64 */
+      id?: number;
+      postOwner?: components["schemas"]["PostOwner"];
+      businessId?: string;
+      businessName?: string;
+      /** Format: int32 */
+      score?: number;
+      description?: string;
+      reply?: components["schemas"]["ReviewReply"];
+    };
+    CheckInRequest: {
+      businessId?: string;
+      /** Format: double */
+      latitude?: number;
+      /** Format: double */
+      longitude?: number;
+    };
+    CheckInResponse: {
+      note?: string;
+      userId?: string;
+      businessId?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    PaginatedRequest: {
+      /** Format: int32 */
+      pageSize?: number;
+      /** Format: int32 */
+      pageNumber?: number;
+      orderBy?: string;
+      /** @enum {string} */
+      sortOrder?: "ASC" | "DESC";
+    };
+    PaginatedResponseReviewResponse: {
+      /**
+       * Format: int32
+       * @description Rozmiar strony
+       * @example 100
+       */
+      pageSize?: number;
+      /**
+       * Format: int32
+       * @description Numer strony
+       * @example 0
+       */
+      pageNumber?: number;
+      /**
+       * Format: int32
+       * @description Liczba elementów na stronie
+       * @example 5
+       */
+      numberOfElements?: number;
+      /**
+       * Format: int64
+       * @description Liczba wszystkich elementów
+       * @example 5
+       */
+      totalNumberOfElements?: number;
+      /**
+       * Format: int32
+       * @description Liczba stron
+       * @example 5
+       */
+      totalPages?: number;
+      /** @description Lista elementów */
+      results?: components["schemas"]["ReviewResponse"][];
+    };
     SearchFilters: {
       /** @enum {string} */
       cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
@@ -51,34 +158,6 @@ export interface components {
       /** @enum {string} */
       sortOrder?: "ASC" | "DESC";
       filters?: components["schemas"]["SearchFilters"];
-    };
-    Business: {
-      /** Format: int64 */
-      id?: number;
-      firebaseUid?: string;
-      name?: string;
-      profilePictureUrl?: string;
-      email?: string;
-      phoneNumber?: string;
-      address?: string;
-      zipCode?: string;
-      district?: string;
-      city?: string;
-      country?: string;
-      description?: string;
-      type?: string;
-      /** @enum {string} */
-      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
-      /** Format: double */
-      score?: number;
-      /** Format: double */
-      locationLatitude?: number;
-      /** Format: double */
-      locationLongitude?: number;
-      /** Format: date */
-      joinDate?: string;
-      categories?: components["schemas"]["Category"][];
-      reviews?: components["schemas"]["Review"][];
     };
     /** @description Lista elementów */
     BusinessResponse: {
@@ -104,7 +183,6 @@ export interface components {
       /** Format: int64 */
       id?: number;
       name?: string;
-      businesses?: components["schemas"]["Business"][];
     };
     Location: {
       country?: string;
@@ -117,8 +195,7 @@ export interface components {
       /** Format: double */
       longitude?: number;
     };
-    Review: Record<string, never>;
-    SearchResponseBusinessResponse: {
+    PaginatedResponseBusinessResponse: {
       /**
        * Format: int32
        * @description Rozmiar strony
@@ -131,6 +208,24 @@ export interface components {
        * @example 0
        */
       pageNumber?: number;
+      /**
+       * Format: int32
+       * @description Liczba elementów na stronie
+       * @example 5
+       */
+      numberOfElements?: number;
+      /**
+       * Format: int64
+       * @description Liczba wszystkich elementów
+       * @example 5
+       */
+      totalNumberOfElements?: number;
+      /**
+       * Format: int32
+       * @description Liczba stron
+       * @example 5
+       */
+      totalPages?: number;
       /** @description Lista elementów */
       results?: components["schemas"]["BusinessResponse"][];
     };
@@ -150,6 +245,16 @@ export interface components {
       name?: string;
       phoneNumber?: string;
     };
+    Review: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int32 */
+      score?: number;
+      description?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      reviewReply?: components["schemas"]["ReviewReply"];
+    };
   };
   responses: never;
   parameters: never;
@@ -164,6 +269,188 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  getReview: {
+    parameters: {
+      query: {
+        userId: string;
+        businessId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ReviewResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  createOrUpdateReview: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateReviewRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ReviewResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getCheckInExists: {
+    parameters: {
+      query: {
+        userId: string;
+        businessId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": boolean;
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  createCheckIn: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CheckInRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["CheckInResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getReviews: {
+    parameters: {
+      path: {
+        businessId: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaginatedRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["PaginatedResponseReviewResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
   searchBusinessesFuzzy: {
     parameters: {
       query: {
@@ -179,11 +466,23 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["SearchResponseBusinessResponse"];
+          "*/*": components["schemas"]["PaginatedResponseBusinessResponse"];
         };
       };
       /** @description Bad Request */
       400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
         content: {
           "*/*": string;
         };
@@ -214,6 +513,18 @@ export interface operations {
           "*/*": string;
         };
       };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
     };
   };
   signIn: {
@@ -231,6 +542,18 @@ export interface operations {
       };
       /** @description Bad Request */
       400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
         content: {
           "*/*": string;
         };
@@ -261,6 +584,151 @@ export interface operations {
           "*/*": string;
         };
       };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getReviews_1: {
+    parameters: {
+      path: {
+        userId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["Review"][];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getVisited: {
+    parameters: {
+      path: {
+        userId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["CheckInResponse"][];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getReview_1: {
+    parameters: {
+      path: {
+        reviewId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ReviewResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  deleteReview: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+      path: {
+        reviewId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
     };
   };
   getBusinessById: {
@@ -278,6 +746,18 @@ export interface operations {
       };
       /** @description Bad Request */
       400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
         content: {
           "*/*": string;
         };
@@ -303,6 +783,18 @@ export interface operations {
           "*/*": string;
         };
       };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
     };
   };
   reindex: {
@@ -313,6 +805,18 @@ export interface operations {
       };
       /** @description Bad Request */
       400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
         content: {
           "*/*": string;
         };

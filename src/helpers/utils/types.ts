@@ -8,3 +8,10 @@ export enum CostEnum {
 }
 
 export type Business = components['schemas']['BusinessResponse'];
+
+export type ReviewResults = components['schemas']['PaginatedResponseReviewResponse']['results'];
+
+export type ReviewResult = ArrayElement<ReviewResults>;
+
+type ArrayElement<ArrayType extends readonly unknown[] | undefined> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

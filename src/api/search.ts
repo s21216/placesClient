@@ -4,7 +4,7 @@ import { ValidUrl } from '../helpers/utils/navigationTypes';
 
 export type SearchRequest = components['schemas']['SearchRequest'];
 
-export type BusinessSearchResponse = components['schemas']['SearchResponseBusinessResponse'];
+export type BusinessSearchResponse = components['schemas']['PaginatedResponseBusinessResponse'];
 
 interface SearchForBusinessesVariables {
   searchQuery: string;
