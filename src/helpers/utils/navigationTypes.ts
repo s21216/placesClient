@@ -1,5 +1,5 @@
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 
 import { paths } from '../../../schema';
 
@@ -26,11 +26,13 @@ export type SearchTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'Se
 export type SearchTabParamList = {
   SearchScreen: undefined;
   Details: { businessId: string };
-  Review: { businessId: string; businessName: string };
+  PostReview: { businessId: string };
+  ReviewList: { businessId: string };
 };
 
 export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScreen'>;
 export type DetailsProps = StackScreenProps<SearchTabParamList, 'Details'>;
-export type ReviewProps = StackScreenProps<SearchTabParamList, 'Review'>;
+export type PostReviewProps = StackScreenProps<SearchTabParamList, 'PostReview'>;
+export type ReviewListProps = StackScreenProps<SearchTabParamList, 'ReviewList'>;
 
 export type ValidUrl = keyof paths;

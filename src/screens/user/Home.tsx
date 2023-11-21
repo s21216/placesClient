@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import { useAuth } from '../../helpers/contexts/AuthContext';
 
 const Home = () => {
-  const { currentUser, role, signOut } = useAuth();
+  const { currentUser, signOut } = useAuth();
   const onSignOutPress = async () => {
     await signOut();
   };
@@ -12,7 +12,6 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Text>Hi {currentUser?.email}!</Text>
-      <Text>You are a {role}!</Text>
       <Button mode="contained" onPress={onSignOutPress}>
         Log out
       </Button>

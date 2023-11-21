@@ -6,8 +6,8 @@
 
 export interface paths {
   "/reviews": {
-    put: operations["updateReview"];
-    post: operations["createReview"];
+    get: operations["getReview"];
+    put: operations["createOrUpdateReview"];
   };
   "/checkIns": {
     get: operations["getCheckInExists"];
@@ -35,7 +35,7 @@ export interface paths {
     get: operations["getVisited"];
   };
   "/reviews/{reviewId}": {
-    get: operations["getReview"];
+    get: operations["getReview_1"];
     delete: operations["deleteReview"];
   };
   "/businesses/{businessId}": {
@@ -53,27 +53,34 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    UpdateReviewRequest: {
-      reviewId?: string;
-      businessId?: string;
-      /** Format: int32 */
-      score?: number;
-      description?: string;
-    };
-    Review: {
-      /** Format: int64 */
-      id?: number;
-      /** Format: int32 */
-      score?: number;
-      description?: string;
-      /** Format: date-time */
-      createdAt?: string;
-    };
     CreateReviewRequest: {
       businessId?: string;
       /** Format: int32 */
       score?: number;
       description?: string;
+    };
+    PostOwner: {
+      firebaseUid?: string;
+      email?: string;
+      fullName?: string;
+    };
+    ReviewReply: {
+      /** Format: int64 */
+      id?: number;
+      description?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    ReviewResponse: {
+      /** Format: int64 */
+      id?: number;
+      postOwner?: components["schemas"]["PostOwner"];
+      businessId?: string;
+      businessName?: string;
+      /** Format: int32 */
+      score?: number;
+      description?: string;
+      reply?: components["schemas"]["ReviewReply"];
     };
     CheckInRequest: {
       businessId?: string;
@@ -98,7 +105,7 @@ export interface components {
       /** @enum {string} */
       sortOrder?: "ASC" | "DESC";
     };
-    PaginatedResponseReview: {
+    PaginatedResponseReviewResponse: {
       /**
        * Format: int32
        * @description Rozmiar strony
@@ -130,7 +137,7 @@ export interface components {
        */
       totalPages?: number;
       /** @description Lista elementów */
-      results?: components["schemas"]["Review"][];
+      results?: components["schemas"]["ReviewResponse"][];
     };
     SearchFilters: {
       /** @enum {string} */
@@ -238,6 +245,16 @@ export interface components {
       name?: string;
       phoneNumber?: string;
     };
+    Review: {
+      /** Format: int64 */
+      id?: number;
+      /** Format: int32 */
+      score?: number;
+      description?: string;
+      /** Format: date-time */
+      createdAt?: string;
+      reviewReply?: components["schemas"]["ReviewReply"];
+    };
   };
   responses: never;
   parameters: never;
@@ -252,22 +269,18 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  updateReview: {
+  getReview: {
     parameters: {
-      header: {
-        Authorization: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateReviewRequest"];
+      query: {
+        userId: string;
+        businessId: string;
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["Review"];
+          "*/*": components["schemas"]["ReviewResponse"];
         };
       };
       /** @description Bad Request */
@@ -290,7 +303,7 @@ export interface operations {
       };
     };
   };
-  createReview: {
+  createOrUpdateReview: {
     parameters: {
       header: {
         Authorization: string;
@@ -305,7 +318,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["Review"];
+          "*/*": components["schemas"]["ReviewResponse"];
         };
       };
       /** @description Bad Request */
@@ -415,7 +428,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["PaginatedResponseReview"];
+          "*/*": components["schemas"]["PaginatedResponseReviewResponse"];
         };
       };
       /** @description Bad Request */
@@ -651,7 +664,7 @@ export interface operations {
       };
     };
   };
-  getReview: {
+  getReview_1: {
     parameters: {
       path: {
         reviewId: string;
@@ -661,7 +674,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["Review"];
+          "*/*": components["schemas"]["ReviewResponse"];
         };
       };
       /** @description Bad Request */

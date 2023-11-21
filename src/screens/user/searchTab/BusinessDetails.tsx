@@ -1,12 +1,15 @@
 import { Ionicons, Entypo } from '@expo/vector-icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Location from 'expo-location';
-import { Alert, StyleSheet, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator, Avatar, Button, Text } from 'react-native-paper';
 
 import { getBusinessDetails, getBusinessReviews } from '../../../api/business';
+import { deleteReview, getReview } from '../../../api/review';
 import { getCheckInState, postCheckIn } from '../../../api/user';
+import ReviewCard from '../../../components/reviewScreen/ReviewCard';
 import { useAuth } from '../../../helpers/contexts/AuthContext';
 import { DetailsProps } from '../../../helpers/utils/navigationTypes';
 import { CostEnum } from '../../../helpers/utils/types';
@@ -14,6 +17,9 @@ import { CostEnum } from '../../../helpers/utils/types';
 const BusinessDetails = ({ navigation, route }: DetailsProps) => {
   const { currentUser } = useAuth();
   const userId = currentUser?.uid;
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+
   const { data, isFetching } = useQuery({
     queryKey: ['details'],
     queryFn: () => getBusinessDetails(route.params.businessId),
@@ -24,6 +30,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
     onSuccess: () => {
       Alert.alert('Checked in!');
       checkInStateQuery.refetch();
+      setIsLoading(false);
     },
     onError: (error: any) => Alert.alert(error.response.data),
   });
@@ -36,37 +43,52 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
   const isCheckedIn = !checkInStateQuery.data?.data;
 
   const getReviewsQuery = useQuery({
-    queryKey: ['reviews'],
+    queryKey: ['reviews', route.params.businessId],
     queryFn: () =>
       getBusinessReviews(route.params.businessId, {
-        pageSize: 10,
+        pageSize: 5,
         pageNumber: 0,
         orderBy: '',
         sortOrder: 'ASC',
       }),
   });
 
-  const onCheckInClick = async () => {
+  const getReviewQuery = useQuery({
+    queryKey: ['review', userId, route.params.businessId],
+    queryFn: () => getReview(userId!, route.params.businessId),
+    retry: false,
+  });
+
+  const deleteReviewMutation = useMutation({
+    mutationFn: () => deleteReview(getReviewQuery.data?.data.id?.toString()!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['review'] });
+    },
+  });
+
+  const onCheckInClick = useCallback(async () => {
+    setIsLoading(true);
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission to access location was denied');
       return;
     }
     const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-    console.log(location);
     checkInMutation.mutate({
       businessId: route.params.businessId,
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
-  };
+    setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkInMutation.mutate, route.params.businessId]);
 
   return (
     <View style={styles.container}>
-      {isFetching ? (
+      {isFetching || isLoading || deleteReviewMutation.isLoading ? (
         <ActivityIndicator style={styles.container} color="black" size={50} />
       ) : (
-        <ScrollView>
+        <ScrollView overScrollMode="always">
           <View style={styles.section}>
             <Text variant="headlineMedium">{data?.data.name}</Text>
             <Text variant="titleSmall">
@@ -85,9 +107,8 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
                     mode="contained"
                     style={styles.button}
                     onPress={() =>
-                      navigation.navigate('Review', {
+                      navigation.navigate('PostReview', {
                         businessId: route.params.businessId,
-                        businessName: data?.data.name!,
                       })
                     }>
                     Write a review
@@ -115,6 +136,27 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
           <View style={styles.section}>
             <Text variant="headlineSmall">Reviews</Text>
             {getReviewsQuery.data?.data.results?.length === 0 && <Text>No reviews yet</Text>}
+            {!getReviewQuery.isError && (
+              <ReviewCard
+                editable
+                review={getReviewQuery.data?.data!}
+                deleteFn={deleteReviewMutation.mutate}
+              />
+            )}
+            {getReviewsQuery.data?.data.results
+              ?.filter((review) => review.postOwner?.firebaseUid !== currentUser?.uid)
+              .map((review) => <ReviewCard review={review} />)}
+            {getReviewsQuery.data?.data.results?.length !== 0 && (
+              <TouchableOpacity
+                style={styles.readAll}
+                onPress={() =>
+                  navigation.navigate('ReviewList', { businessId: route.params.businessId })
+                }>
+                <View>
+                  <Text>Read all reviews</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </ScrollView>
       )}
@@ -149,5 +191,9 @@ const styles = StyleSheet.create({
   },
   score: {
     backgroundColor: 'black',
+  },
+  readAll: {
+    alignItems: 'center',
+    padding: 20,
   },
 });

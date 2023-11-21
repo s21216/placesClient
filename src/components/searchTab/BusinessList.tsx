@@ -6,7 +6,7 @@ import { Avatar, Card, Divider, Text } from 'react-native-paper';
 
 import { BusinessSearchResponse } from '../../api/search';
 import { SearchScreenProps } from '../../helpers/utils/navigationTypes';
-import { Business, CostEnum } from '../../helpers/utils/types';
+import { CostEnum } from '../../helpers/utils/types';
 
 type Props = {
   hide: boolean;
@@ -35,7 +35,7 @@ const BusinessList = ({ hide, searchResults, businessListRef, navigation }: Busi
       isModal={false}
       backgroundInteractionEnabled
       keyboardHandlerEnabled={false}>
-      <FlatList<Business>
+      <FlatList
         nestedScrollEnabled
         data={results}
         renderItem={({ item }) => (
@@ -49,7 +49,7 @@ const BusinessList = ({ hide, searchResults, businessListRef, navigation }: Busi
               <Card.Content>
                 <Text>
                   {item?.type} • {item?.location?.address}, {item?.location?.city} •{' '}
-                  {CostEnum[item?.cost!]}
+                  {CostEnum[item?.cost! as keyof typeof CostEnum]}
                 </Text>
               </Card.Content>
             </Card>

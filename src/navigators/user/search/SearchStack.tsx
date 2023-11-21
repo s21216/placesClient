@@ -2,7 +2,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { SearchTabParamList } from '../../../helpers/utils/navigationTypes';
 import BusinessDetails from '../../../screens/user/searchTab/BusinessDetails';
-import ReviewScreen from '../../../screens/user/searchTab/ReviewScreen';
+import PostReview from '../../../screens/user/searchTab/PostReview';
+import ReviewList from '../../../screens/user/searchTab/ReviewList';
 import SearchScreen from '../../../screens/user/searchTab/SearchScreen';
 
 const Stack = createStackNavigator<SearchTabParamList>();
@@ -23,11 +24,20 @@ const SearchStack = () => {
         }}
       />
       <Stack.Screen
-        name="Review"
-        component={ReviewScreen}
+        name="PostReview"
+        component={PostReview}
         options={{
           headerShown: true,
           headerTitle: 'Write review',
+          headerBackTitleStyle: { color: 'black' },
+        }}
+      />
+      <Stack.Screen
+        name="ReviewList"
+        component={ReviewList}
+        options={{
+          headerShown: true,
+          headerTitle: 'Reviews',
           headerBackTitleStyle: { color: 'black' },
         }}
       />

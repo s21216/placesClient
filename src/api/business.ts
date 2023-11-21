@@ -8,7 +8,7 @@ const searchUrl: ValidUrl = '/businesses/{businessId}';
 export const getBusinessDetails = (businessId: string) =>
   fetchClient().get<BusinessResponse>(searchUrl.replace('{businessId}', businessId));
 
-type ReviewsResponse = components['schemas']['PaginatedResponseReview'];
+type ReviewsResponse = components['schemas']['PaginatedResponseReviewResponse'];
 type ReviewsRequest = components['schemas']['PaginatedRequest'];
 const reviewsUrl: ValidUrl = '/businesses/{businessId}/reviews';
 export const getBusinessReviews = (businessId: string, requestBody: ReviewsRequest) =>
