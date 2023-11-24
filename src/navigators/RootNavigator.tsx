@@ -1,5 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 import UserTabNavigator from './user/UserTabNavigator';
 import { useAuth } from '../helpers/contexts/AuthContext';
@@ -12,25 +14,19 @@ import BusinessHome from '../screens/business/BusinessHome';
 const Stack = createStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const { currentUser, role } = useAuth();
+  const { currentUser, role, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View>
+        <Text>LOADING</Text>
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator>
-      {role ? (
-        role === 'USER' ? (
-          <Stack.Screen
-            name="UserStack"
-            component={UserTabNavigator}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <Stack.Screen
-            name="BusinessHome"
-            component={BusinessHome}
-            options={{ headerShown: false }}
-          />
-        )
-      ) : (
+      {currentUser === undefined ? (
         <>
           <Stack.Screen
             name="LogIn"
@@ -47,6 +43,18 @@ const RootNavigator = () => {
             options={{ headerShown: false }}
           />
         </>
+      ) : role === 'USER' ? (
+        <Stack.Screen
+          name="UserStack"
+          component={UserTabNavigator}
+          options={{ headerShown: false }}
+        />
+      ) : (
+        <Stack.Screen
+          name="BusinessHome"
+          component={BusinessHome}
+          options={{ headerShown: false }}
+        />
       )}
     </Stack.Navigator>
   );

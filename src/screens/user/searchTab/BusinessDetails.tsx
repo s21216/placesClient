@@ -29,7 +29,8 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
     mutationFn: postCheckIn,
     onSuccess: () => {
       Alert.alert('Checked in!');
-      checkInStateQuery.refetch();
+      queryClient.invalidateQueries(['checkIn']);
+      queryClient.invalidateQueries({ queryKey: ['search'] });
       setIsLoading(false);
     },
     onError: (error: any) => Alert.alert(error.response.data),
@@ -62,7 +63,9 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
   const deleteReviewMutation = useMutation({
     mutationFn: () => deleteReview(getReviewQuery.data?.data.id?.toString()!),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['details'] });
       queryClient.invalidateQueries({ queryKey: ['review'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
     },
   });
 
@@ -73,7 +76,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
       Alert.alert('Permission to access location was denied');
       return;
     }
-    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Low });
     checkInMutation.mutate({
       businessId: route.params.businessId,
       latitude: location.coords.latitude,
@@ -97,7 +100,11 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
             </Text>
             <View style={{ marginTop: 10 }}>
               <View style={styles.row}>
-                <Avatar.Text style={styles.score} size={50} label={data?.data.score!.toFixed(1)!} />
+                <Avatar.Text
+                  style={styles.score}
+                  size={50}
+                  label={data?.data.score ? data.data.score?.toFixed(1) : 'N/A'}
+                />
                 {isCheckedIn ? (
                   <Button mode="contained" style={styles.button} onPress={() => onCheckInClick()}>
                     Check in
@@ -135,18 +142,19 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
           </View>
           <View style={styles.section}>
             <Text variant="headlineSmall">Reviews</Text>
-            {getReviewsQuery.data?.data.results?.length === 0 && <Text>No reviews yet</Text>}
-            {!getReviewQuery.isError && (
-              <ReviewCard
-                editable
-                review={getReviewQuery.data?.data!}
-                deleteFn={deleteReviewMutation.mutate}
-              />
-            )}
-            {getReviewsQuery.data?.data.results
+            {getReviewsQuery.data?.data?.results?.length === 0 && <Text>No reviews yet</Text>}
+            {getReviewQuery.data?.data === undefined ||
+              (!getReviewQuery.isError && (
+                <ReviewCard
+                  editable
+                  review={getReviewQuery.data?.data}
+                  deleteFn={deleteReviewMutation.mutate}
+                />
+              ))}
+            {getReviewsQuery.data?.data?.results
               ?.filter((review) => review.postOwner?.firebaseUid !== currentUser?.uid)
               .map((review) => <ReviewCard review={review} />)}
-            {getReviewsQuery.data?.data.results?.length !== 0 && (
+            {getReviewsQuery.data?.data?.results?.length !== 0 && (
               <TouchableOpacity
                 style={styles.readAll}
                 onPress={() =>

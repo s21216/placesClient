@@ -180,12 +180,11 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
         customMapStyle={mapStyle}
         ref={mapRef}
         style={styles.mapview}
-        // showsUserLocation
         initialRegion={{
           latitude: location?.coords.latitude ? location.coords.latitude : 52.2297,
           longitude: location?.coords.longitude ? location.coords.longitude : 21.0122,
-          latitudeDelta: 0.08,
-          longitudeDelta: 0.08,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
         }}>
         {searchMutation.isSuccess &&
           searchMutation.data?.data.results?.map((business) => (
@@ -241,7 +240,7 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
               alignSelf: 'center',
               height: '100%',
               display: isSearchBarActive ? 'block' : 'none',
-              marginTop: 80,
+              marginTop: insets.top + 55,
               marginBottom: 30,
             },
             textInput: {

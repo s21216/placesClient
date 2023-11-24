@@ -1,12 +1,12 @@
 import { RefObject } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ActionSheet, { ActionSheetRef, useScrollHandlers } from 'react-native-actions-sheet';
 import { FlatList } from 'react-native-gesture-handler';
 import { Avatar, Card, Divider, Text } from 'react-native-paper';
 
 import { BusinessSearchResponse } from '../../api/search';
 import { SearchScreenProps } from '../../helpers/utils/navigationTypes';
-import { CostEnum } from '../../helpers/utils/types';
+import { Business, CostEnum } from '../../helpers/utils/types';
 
 type Props = {
   hide: boolean;
@@ -20,8 +20,8 @@ const BusinessList = ({ hide, searchResults, businessListRef, navigation }: Busi
   const scrollHandlers = useScrollHandlers<FlatList>('scrollview-1', businessListRef);
   const results = searchResults?.results;
 
-  const RightContent = (score: number) => (
-    <Avatar.Text style={styles.score} size={50} label={score.toFixed(1)} />
+  const RightContent = (score?: number) => (
+    <Avatar.Text style={styles.score} size={50} label={score ? score?.toFixed(1) : 'N/A'} />
   );
 
   return (
@@ -35,29 +35,35 @@ const BusinessList = ({ hide, searchResults, businessListRef, navigation }: Busi
       isModal={false}
       backgroundInteractionEnabled
       keyboardHandlerEnabled={false}>
-      <FlatList
-        nestedScrollEnabled
-        data={results}
-        renderItem={({ item }) => (
-          <>
-            <Card
-              key={item?.firebaseUid}
-              style={styles.card}
-              mode="contained"
-              onPress={() => navigation.navigate('Details', { businessId: item.firebaseUid! })}>
-              <Card.Title title={item.name} right={() => RightContent(item.score!)} />
-              <Card.Content>
-                <Text>
-                  {item?.type} • {item?.location?.address}, {item?.location?.city} •{' '}
-                  {CostEnum[item?.cost! as keyof typeof CostEnum]}
-                </Text>
-              </Card.Content>
-            </Card>
-            <Divider />
-          </>
-        )}
-        {...scrollHandlers}
-      />
+      {results?.length === 0 ? (
+        <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
+          <Text variant="headlineMedium">We couldn't find anything.</Text>
+        </View>
+      ) : (
+        <FlatList<Business>
+          nestedScrollEnabled
+          data={results}
+          renderItem={({ item }) => (
+            <>
+              <Card
+                key={item?.firebaseUid}
+                style={styles.card}
+                mode="contained"
+                onPress={() => navigation.navigate('Details', { businessId: item.firebaseUid! })}>
+                <Card.Title title={item.name} right={() => RightContent(item.score)} />
+                <Card.Content>
+                  <Text>
+                    {item?.type} • {item?.location?.address}, {item?.location?.city} •{' '}
+                    {CostEnum[item?.cost! as keyof typeof CostEnum]}
+                  </Text>
+                </Card.Content>
+              </Card>
+              <Divider />
+            </>
+          )}
+          {...scrollHandlers}
+        />
+      )}
     </ActionSheet>
   );
 };

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import { z } from 'zod';
 
 import FormInput from '../../components/inputs/FormInput';
@@ -22,7 +22,7 @@ const LogIn = ({ navigation }: LogInProps) => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onBlur' });
 
-  const { logIn } = useAuth();
+  const { logIn, mutationLoading } = useAuth();
 
   const onLogInPress = async (data: FormData) => {
     logIn(data.email, data.password);
@@ -33,41 +33,44 @@ const LogIn = ({ navigation }: LogInProps) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
       keyboardVerticalOffset={Platform.OS === 'ios' ? -64 : 0}>
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.headline} variant="headlineLarge">
-            Places + Spaces
-          </Text>
-        </View>
-        <FormInput
-          style={styles.input}
-          control={control}
-          name="email"
-          label="Email"
-          autoCapitalize="none"
-          error={errors.email !== undefined}
-        />
-        <FormInput
-          style={styles.input}
-          control={control}
-          name="password"
-          label="Password"
-          autoCapitalize="none"
-          secureTextEntry
-          error={errors.password !== undefined}
-        />
-        <Button style={styles.button} mode="contained" onPress={handleSubmit(onLogInPress)}>
-          Log in
-        </Button>
-        <View>
-          <Text>
-            Don't have an account?{' '}
-            <Text style={{ color: '#4285F4' }} onPress={() => navigation.navigate('UserSignUp')}>
-              Sign up
+      {mutationLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.headline} variant="headlineLarge">
+              Places + Spaces
             </Text>
-          </Text>
-        </View>
-        <View>
+          </View>
+          <FormInput
+            style={styles.input}
+            control={control}
+            name="email"
+            label="Email"
+            autoCapitalize="none"
+            error={errors.email !== undefined}
+          />
+          <FormInput
+            style={styles.input}
+            control={control}
+            name="password"
+            label="Password"
+            autoCapitalize="none"
+            secureTextEntry
+            error={errors.password !== undefined}
+          />
+          <Button style={styles.button} mode="contained" onPress={handleSubmit(onLogInPress)}>
+            Log in
+          </Button>
+          <View>
+            <Text>
+              Don't have an account?{' '}
+              <Text style={{ color: '#4285F4' }} onPress={() => navigation.navigate('UserSignUp')}>
+                Sign up
+              </Text>
+            </Text>
+          </View>
+          {/* <View>
           <Text>
             <Text
               style={{ color: '#4285F4' }}
@@ -75,8 +78,9 @@ const LogIn = ({ navigation }: LogInProps) => {
               Sign up for a business account.
             </Text>
           </Text>
+        </View> */}
         </View>
-      </View>
+      )}
     </KeyboardAvoidingView>
   );
 };

@@ -38,20 +38,16 @@ const ReviewCard = ({ editable, review, deleteFn }: ReviewCardProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
+        <View style={styles.row}>
           <Avatar.Text
             style={styles.avatar}
-            label={review?.postOwner?.fullName!}
+            label={review?.postOwner?.fullName?.at(0)!}
             size={30}
             color="white"
           />
           <Text variant="titleMedium">{review?.postOwner?.fullName}</Text>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={styles.row}>
           <Avatar.Text
             label={review?.score?.toLocaleString()!}
             size={40}
@@ -81,9 +77,9 @@ const ReviewCard = ({ editable, review, deleteFn }: ReviewCardProps) => {
               </Menu>
               <Portal>
                 <Dialog visible={dialogVisible} onDismiss={hideDialog}>
-                  <Dialog.Title>Alert</Dialog.Title>
+                  <Dialog.Title>Delete review</Dialog.Title>
                   <Dialog.Content>
-                    <Text variant="bodyMedium">This is simple dialog</Text>
+                    <Text variant="bodyMedium">Are you sure you want to delete your review?</Text>
                   </Dialog.Content>
                   <Dialog.Actions>
                     <Button onPress={hideDialog} textColor="black">
@@ -108,7 +104,6 @@ export default ReviewCard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 10,
   },
   header: {
     flexDirection: 'row',
@@ -116,10 +111,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   avatar: {
     marginHorizontal: 5,
   },
   avatarText: {
     backgroundColor: 'black',
+    marginRight: 5,
   },
 });

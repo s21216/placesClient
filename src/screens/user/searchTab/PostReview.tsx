@@ -40,7 +40,9 @@ const PostReview = ({ navigation, route }: PostReviewProps) => {
   const { mutate, isLoading } = useMutation({
     mutationFn: postReview,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['details'] });
       queryClient.invalidateQueries({ queryKey: ['review'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
       navigation.goBack();
     },
   });

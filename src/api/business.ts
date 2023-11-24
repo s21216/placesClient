@@ -12,4 +12,7 @@ type ReviewsResponse = components['schemas']['PaginatedResponseReviewResponse'];
 type ReviewsRequest = components['schemas']['PaginatedRequest'];
 const reviewsUrl: ValidUrl = '/businesses/{businessId}/reviews';
 export const getBusinessReviews = (businessId: string, requestBody: ReviewsRequest) =>
-  fetchClient().post<ReviewsResponse>(reviewsUrl.replace('{businessId}', businessId), requestBody);
+  fetchClient().post<ReviewsResponse | undefined>(
+    reviewsUrl.replace('{businessId}', businessId),
+    requestBody
+  );

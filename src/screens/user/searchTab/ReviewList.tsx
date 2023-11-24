@@ -18,13 +18,12 @@ const ReviewList = ({ route }: ReviewListProps) => {
         sortOrder: 'ASC',
       }),
     getNextPageParam: (lastPage) =>
-      lastPage.data.pageNumber! < lastPage.data.totalPages! - 1
-        ? lastPage.data.pageNumber! + 1
+      lastPage.data?.pageNumber! < lastPage.data?.totalPages! - 1
+        ? lastPage.data?.pageNumber! + 1
         : undefined,
   });
 
   const handleLoadMore = () => {
-    console.log(hasNextPage);
     if (hasNextPage && !isFetching) {
       fetchNextPage();
     }
@@ -33,7 +32,8 @@ const ReviewList = ({ route }: ReviewListProps) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={data?.pages.flatMap((page) => page.data.results) || []}
+        style={{ padding: 20 }}
+        data={data?.pages?.flatMap((page) => page.data?.results) || []}
         renderItem={({ item }) => <ReviewCard review={item!} />}
         keyExtractor={(item) => item?.id?.toString()!}
         onEndReached={handleLoadMore}
@@ -49,5 +49,6 @@ export default ReviewList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
 });

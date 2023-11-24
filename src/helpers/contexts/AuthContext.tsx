@@ -19,9 +19,10 @@ import {
 } from '../../api/auth';
 
 type AuthContextType = {
-  currentUser?: User | null;
+  currentUser?: User;
   role?: string | null;
   loading: boolean;
+  mutationLoading: boolean;
   logIn: (email: string, password: string) => void;
   signOut: () => Promise<void>;
   userSignUp: ({ email, fullName, username, password }: UserSignUpData) => void;
@@ -41,11 +42,11 @@ export function useAuth() {
 const auth = FIREBASE_AUTH;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>();
+  const [currentUser, setCurrentUser] = useState<User>();
   const [role, setRole] = useState<string | null>();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: logInFn,
     onSuccess: (data) => {
       setRole(data.data.role);
@@ -66,6 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  const mutationLoading =
+    isLoading || userSignUpMutation.isLoading || businessSignUpMutation.isLoading;
+
   async function logIn(email: string, password: string) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -76,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut() {
     await getAuth().signOut();
-    setCurrentUser(null);
+    setCurrentUser(undefined);
     setRole(null);
   }
 
@@ -109,14 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
       if (user) {
         mutate();
         setCurrentUser(user);
-        setLoading(false);
       }
       SplashScreen.hideAsync();
     });
+    setLoading(false);
     return unsubscribe;
   }, [mutate]);
 
@@ -124,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentUser,
     role,
     loading,
+    mutationLoading,
     logIn,
     signOut,
     userSignUp,
