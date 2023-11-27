@@ -153,7 +153,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
               ))}
             {getReviewsQuery.data?.data?.results
               ?.filter((review) => review.postOwner?.firebaseUid !== currentUser?.uid)
-              .map((review) => <ReviewCard review={review} />)}
+              .map((review) => <ReviewCard key={review.id} review={review} />)}
             {getReviewsQuery.data?.data?.results?.length !== 0 && (
               <TouchableOpacity
                 style={styles.readAll}

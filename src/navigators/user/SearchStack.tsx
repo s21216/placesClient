@@ -1,10 +1,10 @@
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { SearchTabParamList } from '../../../helpers/utils/navigationTypes';
-import BusinessDetails from '../../../screens/user/searchTab/BusinessDetails';
-import PostReview from '../../../screens/user/searchTab/PostReview';
-import ReviewList from '../../../screens/user/searchTab/ReviewList';
-import SearchScreen from '../../../screens/user/searchTab/SearchScreen';
+import { SearchTabParamList } from '../../helpers/utils/navigationTypes';
+import BusinessDetails from '../../screens/user/searchTab/BusinessDetails';
+import PostReview from '../../screens/user/searchTab/PostReview';
+import ReviewList from '../../screens/user/searchTab/ReviewList';
+import SearchScreen from '../../screens/user/searchTab/SearchScreen';
 
 const Stack = createStackNavigator<SearchTabParamList>();
 

@@ -70,15 +70,15 @@ const LogIn = ({ navigation }: LogInProps) => {
               </Text>
             </Text>
           </View>
-          {/* <View>
-          <Text>
-            <Text
-              style={{ color: '#4285F4' }}
-              onPress={() => navigation.navigate('BusinessSignUp')}>
-              Sign up for a business account.
+          <View>
+            <Text>
+              <Text
+                style={{ color: '#4285F4' }}
+                onPress={() => navigation.navigate('BusinessSignUp')}>
+                Sign up for a business account.
+              </Text>
             </Text>
-          </Text>
-        </View> */}
+          </View>
         </View>
       )}
     </KeyboardAvoidingView>

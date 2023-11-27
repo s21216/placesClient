@@ -3,17 +3,15 @@ import { Button } from 'react-native-paper';
 
 import { useAuth } from '../../helpers/contexts/AuthContext';
 
-const BusinessHome = () => {
-  const { currentUser, role, signOut } = useAuth();
+const BusinessSettingsScreen = () => {
+  const { currentUser, signOut } = useAuth();
   const onSignOutPress = async () => {
     await signOut();
   };
 
   return (
     <View style={styles.container}>
-      <Text>THIS IS A BUSINESS ROUTE</Text>
       <Text>Hi {currentUser?.email}!</Text>
-      <Text>You are a {role}!</Text>
       <Button mode="contained" onPress={onSignOutPress}>
         Log out
       </Button>
@@ -21,7 +19,7 @@ const BusinessHome = () => {
   );
 };
 
-export default BusinessHome;
+export default BusinessSettingsScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function logIn(email: string, password: string) {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const response = await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       Alert.alert(error.message);
     }

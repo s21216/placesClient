@@ -3,13 +3,13 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import BusinessTabNavigator from './business/BusinessTabNavigator';
 import UserTabNavigator from './user/UserTabNavigator';
 import { useAuth } from '../helpers/contexts/AuthContext';
 import { RootStackParamList } from '../helpers/utils/navigationTypes';
 import BusinessSignUp from '../screens/auth/BusinessSignUp';
 import LogIn from '../screens/auth/LogIn';
 import UserSignUp from '../screens/auth/UserSignUp';
-import BusinessHome from '../screens/business/BusinessHome';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -51,8 +51,8 @@ const RootNavigator = () => {
         />
       ) : (
         <Stack.Screen
-          name="BusinessHome"
-          component={BusinessHome}
+          name="BusinessStack"
+          component={BusinessTabNavigator}
           options={{ headerShown: false }}
         />
       )}

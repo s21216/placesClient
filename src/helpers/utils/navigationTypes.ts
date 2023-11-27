@@ -1,5 +1,5 @@
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import { paths } from '../../../schema';
 
@@ -7,7 +7,7 @@ export type RootStackParamList = {
   LogIn: undefined;
   UserSignUp: undefined;
   BusinessSignUp: undefined;
-  BusinessHome: undefined;
+  BusinessStack: undefined;
   UserStack: undefined;
 };
 
@@ -34,5 +34,41 @@ export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScre
 export type DetailsProps = StackScreenProps<SearchTabParamList, 'Details'>;
 export type PostReviewProps = StackScreenProps<SearchTabParamList, 'PostReview'>;
 export type ReviewListProps = StackScreenProps<SearchTabParamList, 'ReviewList'>;
+
+//Business navgigation types
+
+export type BusinessNavigatorParamList = {
+  BusinessHomeTab: undefined;
+  ReviewTab: undefined;
+  ProfileTab: undefined;
+};
+
+export type BusinessHomeTabProps = BottomTabNavigationProp<
+  BusinessNavigatorParamList,
+  'BusinessHomeTab'
+>;
+export type BusinessProfileTabProps = BottomTabNavigationProp<
+  BusinessNavigatorParamList,
+  'ProfileTab'
+>;
+
+export type BusinessReviewTabProps = BottomTabNavigationProp<
+  BusinessNavigatorParamList,
+  'ReviewTab'
+>;
+
+export type BusinessHomeTabParamList = {
+  BusinessHomeScreen: undefined;
+  BusinessEditDetailsScreen: undefined;
+};
+
+export type BusinessHomeScreenProps = StackScreenProps<
+  BusinessHomeTabParamList,
+  'BusinessHomeScreen'
+>;
+
+export type BusinessReviewTabParamList = {
+  BusinessReviewScreen: undefined;
+};
 
 export type ValidUrl = keyof paths;
