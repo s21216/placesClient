@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { StyleSheet, View } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, RefreshControl } from 'react-native-gesture-handler';
 import { ActivityIndicator } from 'react-native-paper';
 
 import { getBusinessReviews } from '../../../api/business';
@@ -8,7 +8,7 @@ import ReviewCard from '../../../components/reviewScreen/ReviewCard';
 import { ReviewListProps } from '../../../helpers/utils/navigationTypes';
 
 const ReviewList = ({ route }: ReviewListProps) => {
-  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetching, refetch, isRefetching } = useInfiniteQuery({
     queryKey: ['reviews', route.params.businessId],
     queryFn: ({ pageParam = 0 }) =>
       getBusinessReviews(route.params.businessId, {
@@ -38,6 +38,7 @@ const ReviewList = ({ route }: ReviewListProps) => {
         keyExtractor={(item) => item?.id?.toString()!}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
+        refreshControl={<RefreshControl onRefresh={refetch} refreshing={isRefetching} />}
       />
       {isFetching && <ActivityIndicator color="black" size={30} />}
     </View>
