@@ -7,9 +7,9 @@ const Stack = createStackNavigator<BusinessReviewTabParamList>();
 
 const BusinessReviewStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerTintColor: 'black' }}>
       <Stack.Screen
-        name="BusinessReviewScreen"
+        name="BusinessReviewList"
         component={BusinessReviewScreen}
         options={{
           headerShown: true,

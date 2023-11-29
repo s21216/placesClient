@@ -5,10 +5,10 @@ import { Button, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
 
-import { getBusinessDetails } from '../../api/business';
-import { useAuth } from '../../helpers/contexts/AuthContext';
-import { BusinessHomeScreenProps } from '../../helpers/utils/navigationTypes';
-import { CostEnum } from '../../helpers/utils/types';
+import { getBusinessDetails } from '../../../api/business';
+import { useAuth } from '../../../helpers/contexts/AuthContext';
+import { BusinessHomeScreenProps } from '../../../helpers/utils/navigationTypes';
+import { CostEnum } from '../../../helpers/utils/types';
 
 const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
   const { currentUser } = useAuth();
@@ -22,13 +22,10 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button
-          onPress={() => navigation.navigate('BusinessEditDetailsScreen')}
-          title="Edit details"
-        />
+        <Button onPress={() => navigation.navigate('BusinessEditDetails')} title="Edit" />
       ),
     });
-  }, [navigation]);
+  }, [data, navigation]);
 
   return (
     <View style={styles.container}>

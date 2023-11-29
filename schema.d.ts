@@ -9,6 +9,9 @@ export interface paths {
     get: operations["getReview"];
     put: operations["createOrUpdateReview"];
   };
+  "/businesses/details": {
+    put: operations["updateBusinessDetails"];
+  };
   "/checkIns": {
     get: operations["getCheckInExists"];
     post: operations["createCheckIn"];
@@ -38,6 +41,9 @@ export interface paths {
     get: operations["getReview_1"];
     delete: operations["deleteReview"];
   };
+  "/categories": {
+    get: operations["getCategories"];
+  };
   "/businesses/{businessId}": {
     get: operations["getBusinessById"];
   };
@@ -46,6 +52,9 @@ export interface paths {
   };
   "/businesses/reindex": {
     get: operations["reindex"];
+  };
+  "/attributes": {
+    get: operations["getAttributes"];
   };
 }
 
@@ -81,6 +90,25 @@ export interface components {
       score?: number;
       description?: string;
       reply?: components["schemas"]["ReviewReply"];
+    };
+    Attribute: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+    };
+    Category: {
+      /** Format: int64 */
+      id?: number;
+      name?: string;
+    };
+    UpdateBusinessDetailsRequest: {
+      type?: string;
+      description?: string;
+      phoneNumber?: string;
+      categories?: components["schemas"]["Category"][];
+      /** @enum {string} */
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
+      attributes?: components["schemas"]["Attribute"][];
     };
     CheckInRequest: {
       businessId?: string;
@@ -179,11 +207,6 @@ export interface components {
       /** @enum {string} */
       role?: "USER" | "BUSINESS";
     };
-    Category: {
-      /** Format: int64 */
-      id?: number;
-      name?: string;
-    };
     Location: {
       country?: string;
       address?: string;
@@ -255,6 +278,26 @@ export interface components {
       createdAt?: string;
       reviewReply?: components["schemas"]["ReviewReply"];
     };
+    BusinessDetailsResponse: {
+      firebaseUid?: string;
+      name?: string;
+      email?: string;
+      phoneNumber?: string;
+      profilePictureUrl?: string;
+      description?: string;
+      type?: string;
+      categories?: components["schemas"]["Category"][];
+      /** @enum {string} */
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
+      /** Format: double */
+      score?: number;
+      location?: components["schemas"]["Location"];
+      attributes?: components["schemas"]["Attribute"][];
+      /** Format: date */
+      joinDate?: string;
+      /** @enum {string} */
+      role?: "USER" | "BUSINESS";
+    };
   };
   responses: never;
   parameters: never;
@@ -320,6 +363,42 @@ export interface operations {
         content: {
           "*/*": components["schemas"]["ReviewResponse"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  updateBusinessDetails: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateBusinessDetailsRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
       };
       /** @description Bad Request */
       400: {
@@ -731,6 +810,34 @@ export interface operations {
       };
     };
   };
+  getCategories: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["Category"][];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
   getBusinessById: {
     parameters: {
       path: {
@@ -741,7 +848,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["BusinessResponse"];
+          "*/*": components["schemas"]["BusinessDetailsResponse"];
         };
       };
       /** @description Bad Request */
@@ -802,6 +909,34 @@ export interface operations {
       /** @description OK */
       200: {
         content: never;
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getAttributes: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["Attribute"][];
+        };
       };
       /** @description Bad Request */
       400: {

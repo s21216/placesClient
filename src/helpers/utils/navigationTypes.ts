@@ -59,7 +59,8 @@ export type BusinessReviewTabProps = BottomTabNavigationProp<
 
 export type BusinessHomeTabParamList = {
   BusinessHomeScreen: undefined;
-  BusinessEditDetailsScreen: undefined;
+  BusinessEditDetails: undefined;
+  BusinessPickLocation: undefined;
 };
 
 export type BusinessHomeScreenProps = StackScreenProps<
@@ -67,8 +68,13 @@ export type BusinessHomeScreenProps = StackScreenProps<
   'BusinessHomeScreen'
 >;
 
+export type BusinessEditDetailsScreenProps = StackScreenProps<
+  BusinessHomeTabParamList,
+  'BusinessEditDetails'
+>;
+
 export type BusinessReviewTabParamList = {
-  BusinessReviewScreen: undefined;
+  BusinessReviewList: undefined;
 };
 
 export type ValidUrl = keyof paths;

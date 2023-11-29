@@ -11,7 +11,11 @@ const Stack = createStackNavigator<SearchTabParamList>();
 const SearchStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{ headerShown: false, headerTintColor: 'black' }}
+      />
       <Stack.Screen
         name="Details"
         component={BusinessDetails}
@@ -19,7 +23,6 @@ const SearchStack = () => {
           headerShown: true,
           headerTitle: '',
           headerBackTitle: 'Search',
-          headerBackTitleStyle: { color: 'black' },
           headerStyle: { backgroundColor: 'white' },
         }}
       />
