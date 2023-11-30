@@ -19,7 +19,6 @@ const CategoriesSheet = (
   props: SheetProps<{
     checkedCategories: Category[];
     control: Control<BusinessDetailsFormData>;
-    name: string;
   }>
 ) => {
   const actionSheetRef = useRef<ActionSheetRef>(null);

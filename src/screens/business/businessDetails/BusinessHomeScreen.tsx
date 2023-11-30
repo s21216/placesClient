@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
+import { ActivityIndicator, Avatar, Chip, Text, Button as StyledButton } from 'react-native-paper';
 
 import { getBusinessDetails } from '../../../api/business';
 import { useAuth } from '../../../helpers/contexts/AuthContext';
@@ -36,8 +36,7 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
           <View style={styles.section}>
             <Text variant="headlineMedium">{data?.data.name}</Text>
             <Text variant="titleSmall">
-              {data?.data.type} • {data?.data.location?.address}, {data?.data.location?.city} •{' '}
-              {CostEnum[data?.data.cost!]}
+              {data?.data.type} • {data?.data.location?.address} • {CostEnum[data?.data.cost!]}
             </Text>
             <View style={{ marginTop: 10 }}>
               <View style={styles.row}>
@@ -46,6 +45,16 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
                   size={50}
                   label={data?.data.score ? data.data.score?.toFixed(1) : 'N/A'}
                 />
+                <StyledButton
+                  style={styles.button}
+                  onPress={() =>
+                    navigation.navigate('BusinessLocation', {
+                      businessId: currentUser?.uid!,
+                    })
+                  }
+                  buttonColor="black">
+                  <Ionicons name="location-sharp" size={20} color="white" />
+                </StyledButton>
               </View>
             </View>
           </View>
@@ -65,6 +74,31 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
               </Text>
             </View>
           </View>
+          {data?.data.categories?.length !== 0 && (
+            <View style={styles.section}>
+              <Text variant="headlineSmall">Categories</Text>
+              <View style={styles.wrap}>
+                {data?.data.categories?.map((category) => (
+                  <Chip key={category.id} style={styles.category}>
+                    {category.name}
+                  </Chip>
+                ))}
+              </View>
+            </View>
+          )}
+          {data?.data.attributes?.length !== 0 && (
+            <View style={styles.section}>
+              <Text variant="headlineSmall">More about business</Text>
+              <View style={styles.wrap}>
+                {data?.data.attributes?.map((attribute) => (
+                  <View key={attribute.id} style={styles.attribute}>
+                    <Ionicons name="checkmark" size={20} />
+                    <Text>{attribute.name}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </ScrollView>
       )}
     </View>
@@ -102,5 +136,20 @@ const styles = StyleSheet.create({
   readAll: {
     alignItems: 'center',
     padding: 20,
+  },
+  wrap: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    marginTop: 5,
+  },
+  attribute: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '50%',
+  },
+  category: {
+    marginHorizontal: 5,
   },
 });

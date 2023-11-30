@@ -14,6 +14,16 @@ const updateBusinessDetailsUrl: ValidUrl = '/businesses/details';
 export const updateBusinessDetails = (request: UpdateBusinessDetailsRequest) =>
   fetchClient().put(updateBusinessDetailsUrl, request);
 
+type Location = components['schemas']['Location'];
+const getBusinessLocationUrl: ValidUrl = '/businesses/{businessId}/location';
+export const getBusinessLocation = (businessId: string) =>
+  fetchClient().get<Location>(getBusinessLocationUrl.replace('{businessId}', businessId));
+
+type UpdateBusinessLocationRequest = components['schemas']['UpdateBusinessLocationRequest'];
+const updateBusinessLocationUrl: ValidUrl = '/businesses/location';
+export const updateBusinessLocation = (request: UpdateBusinessLocationRequest) =>
+  fetchClient().put(updateBusinessLocationUrl, request);
+
 type ReviewsResponse = components['schemas']['PaginatedResponseReviewResponse'];
 type ReviewsRequest = components['schemas']['PaginatedRequest'];
 const reviewsUrl: ValidUrl = '/businesses/{businessId}/reviews';

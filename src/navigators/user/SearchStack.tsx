@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { SearchTabParamList } from '../../helpers/utils/navigationTypes';
+import BusinessLocationScreen from '../../screens/shared/BusinessLocationScreen';
 import BusinessDetails from '../../screens/user/searchTab/BusinessDetails';
 import PostReview from '../../screens/user/searchTab/PostReview';
 import ReviewList from '../../screens/user/searchTab/ReviewList';
@@ -10,7 +11,7 @@ const Stack = createStackNavigator<SearchTabParamList>();
 
 const SearchStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerTintColor: 'black' }}>
       <Stack.Screen
         name="SearchScreen"
         component={SearchScreen}
@@ -42,6 +43,14 @@ const SearchStack = () => {
           headerShown: true,
           headerTitle: 'Reviews',
           headerBackTitleStyle: { color: 'black' },
+        }}
+      />
+      <Stack.Screen
+        name="BusinessLocation"
+        component={BusinessLocationScreen}
+        options={{
+          headerShown: true,
+          headerTitle: 'Location',
         }}
       />
     </Stack.Navigator>

@@ -53,7 +53,7 @@ const BusinessList = ({ hide, searchResults, businessListRef, navigation }: Busi
                 <Card.Title title={item.name} right={() => RightContent(item.score)} />
                 <Card.Content>
                   <Text>
-                    {item?.type} • {item?.location?.address}, {item?.location?.city} •{' '}
+                    {item?.type} • {item?.location?.address} •{' '}
                     {CostEnum[item?.cost! as keyof typeof CostEnum]}
                   </Text>
                 </Card.Content>

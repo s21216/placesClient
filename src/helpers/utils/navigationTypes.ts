@@ -28,6 +28,7 @@ export type SearchTabParamList = {
   Details: { businessId: string };
   PostReview: { businessId: string };
   ReviewList: { businessId: string };
+  BusinessLocation: { businessId: string };
 };
 
 export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScreen'>;
@@ -60,7 +61,8 @@ export type BusinessReviewTabProps = BottomTabNavigationProp<
 export type BusinessHomeTabParamList = {
   BusinessHomeScreen: undefined;
   BusinessEditDetails: undefined;
-  BusinessPickLocation: undefined;
+  BusinessUpdateLocation: { businessId: string };
+  BusinessLocation: { businessId: string };
 };
 
 export type BusinessHomeScreenProps = StackScreenProps<
@@ -71,6 +73,16 @@ export type BusinessHomeScreenProps = StackScreenProps<
 export type BusinessEditDetailsScreenProps = StackScreenProps<
   BusinessHomeTabParamList,
   'BusinessEditDetails'
+>;
+
+export type BusinessUpdateLocationScreenProps = StackScreenProps<
+  BusinessHomeTabParamList,
+  'BusinessUpdateLocation'
+>;
+
+export type BusinessLocationProps = StackScreenProps<
+  SearchTabParamList | BusinessHomeTabParamList,
+  'BusinessLocation'
 >;
 
 export type BusinessReviewTabParamList = {

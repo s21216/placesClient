@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import { useCallback, useState } from 'react';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { ActivityIndicator, Avatar, Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Avatar, Button, Chip, Text } from 'react-native-paper';
 
 import { getBusinessDetails, getBusinessReviews } from '../../../api/business';
 import { deleteReview, getReview } from '../../../api/review';
@@ -95,8 +95,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
           <View style={styles.section}>
             <Text variant="headlineMedium">{data?.data.name}</Text>
             <Text variant="titleSmall">
-              {data?.data.type} • {data?.data.location?.address}, {data?.data.location?.city} •{' '}
-              {CostEnum[data?.data.cost!]}
+              {data?.data.type} • {data?.data.location?.address} • {CostEnum[data?.data.cost!]}
             </Text>
             <View style={{ marginTop: 10 }}>
               <View style={styles.row}>
@@ -121,6 +120,16 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
                     Write a review
                   </Button>
                 )}
+                <Button
+                  style={styles.button}
+                  onPress={() =>
+                    navigation.navigate('BusinessLocation', {
+                      businessId: route.params.businessId,
+                    })
+                  }
+                  buttonColor="black">
+                  <Ionicons name="location-sharp" size={20} color="white" />
+                </Button>
               </View>
             </View>
           </View>
@@ -166,6 +175,32 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
               </TouchableOpacity>
             )}
           </View>
+
+          {data?.data.categories?.length !== 0 && (
+            <View style={styles.section}>
+              <Text variant="headlineSmall">Categories</Text>
+              <View style={styles.wrap}>
+                {data?.data.categories?.map((category) => (
+                  <Chip key={category.id} style={styles.category}>
+                    {category.name}
+                  </Chip>
+                ))}
+              </View>
+            </View>
+          )}
+          {data?.data.attributes?.length !== 0 && (
+            <View style={styles.section}>
+              <Text variant="headlineSmall">More about business</Text>
+              <View style={styles.wrap}>
+                {data?.data.attributes?.map((attribute) => (
+                  <View key={attribute.id} style={styles.attribute}>
+                    <Ionicons name="checkmark" size={20} />
+                    <Text>{attribute.name}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </ScrollView>
       )}
     </View>
@@ -203,5 +238,18 @@ const styles = StyleSheet.create({
   readAll: {
     alignItems: 'center',
     padding: 20,
+  },
+  wrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 5,
+  },
+  attribute: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '50%',
+  },
+  category: {
+    marginHorizontal: 5,
   },
 });

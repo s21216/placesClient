@@ -76,7 +76,7 @@ const BusinessEditDetailsScreen = ({ navigation }: BusinessEditDetailsScreenProp
       updateDetailsMutation.mutate(data);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateDetailsMutation.mutate, errors]
+    [updateDetailsMutation.mutate]
   );
 
   useEffect(() => {
@@ -138,10 +138,14 @@ const BusinessEditDetailsScreen = ({ navigation }: BusinessEditDetailsScreenProp
             Location
           </Text>
           <TouchableHighlight
-            onPress={() => navigation.navigate('BusinessPickLocation')}
+            onPress={() =>
+              navigation.navigate('BusinessUpdateLocation', { businessId: currentUser?.uid! })
+            }
             underlayColor="#e6e6e6">
-            <View style={styles.checkbox}>
-              <Text variant="titleMedium">Set location</Text>
+            <View>
+              <Text style={styles.location} variant="titleMedium">
+                {data?.data.location?.address}
+              </Text>
             </View>
           </TouchableHighlight>
         </View>
@@ -150,12 +154,12 @@ const BusinessEditDetailsScreen = ({ navigation }: BusinessEditDetailsScreenProp
           <Controller
             control={control}
             name="categories"
-            render={(name) => (
+            render={() => (
               <TouchableOpacity
                 style={styles.border}
                 onPress={() => {
                   SheetManager.show('categories-sheet', {
-                    payload: { checkedCategories: data?.data.categories, control, name },
+                    payload: { checkedCategories: data?.data.categories, control },
                   });
                 }}>
                 {getValues('categories')?.length === 0 && <Text>Choose categories</Text>}
@@ -223,6 +227,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+
   section: {
     marginHorizontal: 15,
     marginTop: 20,
@@ -254,5 +259,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  location: {
+    padding: 20,
   },
 });

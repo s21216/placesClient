@@ -9,6 +9,9 @@ export interface paths {
     get: operations["getReview"];
     put: operations["createOrUpdateReview"];
   };
+  "/businesses/location": {
+    put: operations["updateBusinessLocation"];
+  };
   "/businesses/details": {
     put: operations["updateBusinessDetails"];
   };
@@ -46,6 +49,9 @@ export interface paths {
   };
   "/businesses/{businessId}": {
     get: operations["getBusinessById"];
+  };
+  "/businesses/{businessId}/location": {
+    get: operations["getBusinessLocation"];
   };
   "/businesses/search/autocomplete": {
     get: operations["autocomplete"];
@@ -90,6 +96,13 @@ export interface components {
       score?: number;
       description?: string;
       reply?: components["schemas"]["ReviewReply"];
+    };
+    UpdateBusinessLocationRequest: {
+      address?: string;
+      /** Format: double */
+      latitude?: number;
+      /** Format: double */
+      longitude?: number;
     };
     Attribute: {
       /** Format: int64 */
@@ -363,6 +376,42 @@ export interface operations {
         content: {
           "*/*": components["schemas"]["ReviewResponse"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  updateBusinessLocation: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateBusinessLocationRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
       };
       /** @description Bad Request */
       400: {
@@ -849,6 +898,39 @@ export interface operations {
       200: {
         content: {
           "*/*": components["schemas"]["BusinessDetailsResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getBusinessLocation: {
+    parameters: {
+      path: {
+        businessId: string;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["Location"];
         };
       };
       /** @description Bad Request */
