@@ -26,7 +26,7 @@ type AuthContextType = {
   logIn: (email: string, password: string) => void;
   signOut: () => Promise<void>;
   userSignUp: ({ email, fullName, username, password }: UserSignUpData) => void;
-  businessSignUp: ({ email, name, phoneNumber, password }: BusinessSignUpData) => void;
+  businessSignUp: ({ email, name, phoneNumber, password, location }: BusinessSignUpData) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -97,15 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function businessSignUp({
     email,
-    address,
     phoneNumber,
     name,
+    type,
     password,
+    location,
   }: BusinessSignUpData) {
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password!);
       if (response.user) {
-        businessSignUpMutation.mutate({ email, address, phoneNumber, name });
+        businessSignUpMutation.mutate({ email, phoneNumber, name, type, location });
       }
     } catch (error: any) {
       Alert.alert(error.message);

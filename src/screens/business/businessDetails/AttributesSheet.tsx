@@ -7,7 +7,7 @@ import ActionSheet, {
   SheetProps,
   useScrollHandlers,
 } from 'react-native-actions-sheet';
-import { ActivityIndicator, Chip, Text } from 'react-native-paper';
+import { ActivityIndicator, Chip } from 'react-native-paper';
 
 import { BusinessDetailsFormData } from './BusinessEditDetailsScreen';
 import { components } from '../../../../schema';
@@ -46,9 +46,6 @@ const CategoriesSheet = (
         />
       ) : (
         <ScrollView {...scrollHandlers} nestedScrollEnabled>
-          <Text style={{ margin: 20 }} variant="headlineMedium">
-            Select up to 5 attributes
-          </Text>
           <View style={styles.wrap}>
             {data?.data.map((attribute) => (
               <Chip
@@ -63,9 +60,7 @@ const CategoriesSheet = (
                 style={styles.chip}
                 onPress={
                   fields?.find((field) => field.id === attribute.id) === undefined
-                    ? fields.length < 5
-                      ? () => append({ id: attribute.id!, name: attribute.name! })
-                      : () => {}
+                    ? () => append({ id: attribute.id!, name: attribute.name! })
                     : () => remove(fields.map((field) => field.id).indexOf(attribute.id!))
                 }>
                 {attribute.name}
@@ -85,7 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     borderColor: 'lightgray',
-    marginHorizontal: 10,
+    margin: 10,
   },
   chip: {
     margin: 5,

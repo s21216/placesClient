@@ -5,31 +5,35 @@ import { Button, Text } from 'react-native-paper';
 import { z } from 'zod';
 
 import FormInput from '../../components/inputs/FormInput';
-import { useAuth } from '../../helpers/contexts/AuthContext';
+import { useBusinessSignUp } from '../../helpers/contexts/BusinessSignUpContext';
 import { BusinessSignUpProps } from '../../helpers/utils/navigationTypes';
 
 const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
 
 const schema = z.object({
   name: z.string().min(2),
-  address: z.string().min(2),
   email: z.string().email(),
+  type: z.string().min(2).max(15),
   phoneNumber: z.string().min(9).regex(phoneRegex, 'Invalid number'),
   password: z.string().min(6),
 });
 type FormData = z.infer<typeof schema>;
 
 const BusinessSignUp = ({ navigation }: BusinessSignUpProps) => {
+  const { getForm, setForm } = useBusinessSignUp();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema), mode: 'onBlur' });
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    mode: 'onBlur',
+  });
 
-  const { businessSignUp } = useAuth();
-
-  const onSignUpPress = async (data: FormData) => {
-    businessSignUp({ ...data });
+  const onNextClick = (data: FormData) => {
+    navigation.navigate('BusinessSignUpLocation');
+    setForm({ ...getForm(), ...data });
   };
 
   return (
@@ -52,12 +56,12 @@ const BusinessSignUp = ({ navigation }: BusinessSignUpProps) => {
           error={errors.name !== undefined}
         />
         <FormInput
+          placeholder="e.g pizza, restaurant, bar"
           style={styles.input}
           control={control}
-          name="address"
-          label="Address"
-          autoCapitalize="none"
-          error={errors.address !== undefined}
+          name="type"
+          label="Business type"
+          error={errors.name !== undefined}
         />
         <FormInput
           style={styles.input}
@@ -84,8 +88,8 @@ const BusinessSignUp = ({ navigation }: BusinessSignUpProps) => {
           secureTextEntry
           error={errors.password !== undefined}
         />
-        <Button style={styles.button} mode="contained" onPress={handleSubmit(onSignUpPress)}>
-          Sign up
+        <Button style={styles.button} mode="contained" onPress={handleSubmit(onNextClick)}>
+          Next
         </Button>
         <View>
           <Text>

@@ -2,10 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
-import { ActivityIndicator, Chip, SegmentedButtons, Text } from 'react-native-paper';
+import { ActivityIndicator, Chip, SegmentedButtons, Text, Button } from 'react-native-paper';
 import { z } from 'zod';
 
 import { getBusinessDetails, updateBusinessDetails } from '../../../api/business';
@@ -82,7 +82,12 @@ const BusinessEditDetailsScreen = ({ navigation }: BusinessEditDetailsScreenProp
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button title="Save" disabled={!isDirty || !isValid} onPress={handleSubmit(onFormSubmit)} />
+        <Button
+          style={{ right: 5 }}
+          disabled={!isDirty || !isValid}
+          onPress={handleSubmit(onFormSubmit)}>
+          Save
+        </Button>
       ),
     });
   }, [handleSubmit, isDirty, navigation, onFormSubmit, isValid]);
@@ -230,7 +235,8 @@ const styles = StyleSheet.create({
 
   section: {
     marginHorizontal: 15,
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
   textInput: {
     marginVertical: 5,

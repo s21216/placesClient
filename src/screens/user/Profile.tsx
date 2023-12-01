@@ -3,7 +3,7 @@ import { Button } from 'react-native-paper';
 
 import { useAuth } from '../../helpers/contexts/AuthContext';
 
-const Home = () => {
+const Profile = () => {
   const { currentUser, signOut } = useAuth();
   const onSignOutPress = async () => {
     await signOut();
@@ -19,7 +19,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Profile;
 
 const styles = StyleSheet.create({
   container: {

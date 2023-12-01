@@ -1,9 +1,9 @@
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { ActivityIndicator, Avatar, Chip, Text, Button as StyledButton } from 'react-native-paper';
+import { ActivityIndicator, Avatar, Chip, Text, Button } from 'react-native-paper';
 
 import { getBusinessDetails } from '../../../api/business';
 import { useAuth } from '../../../helpers/contexts/AuthContext';
@@ -22,7 +22,9 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => navigation.navigate('BusinessEditDetails')} title="Edit" />
+        <Button style={{ right: 5 }} onPress={() => navigation.navigate('BusinessEditDetails')}>
+          Edit
+        </Button>
       ),
     });
   }, [data, navigation]);
@@ -45,7 +47,7 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
                   size={50}
                   label={data?.data.score ? data.data.score?.toFixed(1) : 'N/A'}
                 />
-                <StyledButton
+                <Button
                   style={styles.button}
                   onPress={() =>
                     navigation.navigate('BusinessLocation', {
@@ -54,7 +56,7 @@ const BusinessHomeScreen = ({ navigation }: BusinessHomeScreenProps) => {
                   }
                   buttonColor="black">
                   <Ionicons name="location-sharp" size={20} color="white" />
-                </StyledButton>
+                </Button>
               </View>
             </View>
           </View>

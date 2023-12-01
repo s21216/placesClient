@@ -44,9 +44,7 @@ function BusinessTabNavigator() {
         options={{
           tabBarLabel: 'Settings',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-settings-sharp" color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}
       />
     </Tab.Navigator>

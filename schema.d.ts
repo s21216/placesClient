@@ -265,7 +265,7 @@ export interface components {
       /** @description Lista elementów */
       results?: components["schemas"]["BusinessResponse"][];
     };
-    UserRequest: {
+    UserSignUpRequest: {
       email?: string;
       username?: string;
       fullName?: string;
@@ -276,10 +276,12 @@ export interface components {
       /** @enum {string} */
       role?: "USER" | "BUSINESS";
     };
-    BusinessRequest: {
+    BusinessSignUpRequest: {
       email?: string;
       name?: string;
       phoneNumber?: string;
+      type?: string;
+      location?: components["schemas"]["Location"];
     };
     Review: {
       /** Format: int64 */
@@ -625,7 +627,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UserRequest"];
+        "application/json": components["schemas"]["UserSignUpRequest"];
       };
     };
     responses: {
@@ -696,7 +698,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["BusinessRequest"];
+        "application/json": components["schemas"]["BusinessSignUpRequest"];
       };
     };
     responses: {

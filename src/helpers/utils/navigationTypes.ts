@@ -7,6 +7,7 @@ export type RootStackParamList = {
   LogIn: undefined;
   UserSignUp: undefined;
   BusinessSignUp: undefined;
+  BusinessSignUpLocation: undefined;
   BusinessStack: undefined;
   UserStack: undefined;
 };
@@ -18,6 +19,7 @@ export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'Business
 export type UserNavigatorParamList = {
   HomeTab: undefined;
   SearchTab: undefined;
+  Profile: undefined;
 };
 
 export type HomeTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'HomeTab'>;

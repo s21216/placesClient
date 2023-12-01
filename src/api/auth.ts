@@ -10,10 +10,15 @@ export type UserSignUpData = {
 
 export type BusinessSignUpData = {
   email: string;
+  type: string;
   phoneNumber: string;
-  address: string;
   name: string;
   password?: string;
+  location: {
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
 };
 
 type AuthResponse = components['schemas']['AuthResponse'];

@@ -6,8 +6,10 @@ import { Text } from 'react-native-paper';
 import BusinessTabNavigator from './business/BusinessTabNavigator';
 import UserTabNavigator from './user/UserTabNavigator';
 import { useAuth } from '../helpers/contexts/AuthContext';
+import { BusinessSignUpProvider } from '../helpers/contexts/BusinessSignUpContext';
 import { RootStackParamList } from '../helpers/utils/navigationTypes';
 import BusinessSignUp from '../screens/auth/BusinessSignUp';
+import BusinessSignUpLocation from '../screens/auth/BusinessSignUpLocation';
 import LogIn from '../screens/auth/LogIn';
 import UserSignUp from '../screens/auth/UserSignUp';
 
@@ -25,38 +27,49 @@ const RootNavigator = () => {
   }
 
   return (
-    <Stack.Navigator>
-      {currentUser === undefined ? (
-        <>
+    <BusinessSignUpProvider>
+      <Stack.Navigator>
+        {currentUser === undefined ? (
+          <>
+            <Stack.Screen
+              name="LogIn"
+              component={LogIn}
+              options={{
+                headerShown: false,
+                animationTypeForReplace: 'pop',
+              }}
+            />
+            <Stack.Screen
+              name="UserSignUp"
+              component={UserSignUp}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BusinessSignUp"
+              component={BusinessSignUp}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BusinessSignUpLocation"
+              component={BusinessSignUpLocation}
+              options={{ headerShown: true, headerTitle: 'Set your business location' }}
+            />
+          </>
+        ) : role === 'USER' ? (
           <Stack.Screen
-            name="LogIn"
-            component={LogIn}
-            options={{
-              headerShown: false,
-              animationTypeForReplace: 'pop',
-            }}
-          />
-          <Stack.Screen name="UserSignUp" component={UserSignUp} options={{ headerShown: false }} />
-          <Stack.Screen
-            name="BusinessSignUp"
-            component={BusinessSignUp}
+            name="UserStack"
+            component={UserTabNavigator}
             options={{ headerShown: false }}
           />
-        </>
-      ) : role === 'USER' ? (
-        <Stack.Screen
-          name="UserStack"
-          component={UserTabNavigator}
-          options={{ headerShown: false }}
-        />
-      ) : (
-        <Stack.Screen
-          name="BusinessStack"
-          component={BusinessTabNavigator}
-          options={{ headerShown: false }}
-        />
-      )}
-    </Stack.Navigator>
+        ) : (
+          <Stack.Screen
+            name="BusinessStack"
+            component={BusinessTabNavigator}
+            options={{ headerShown: false }}
+          />
+        )}
+      </Stack.Navigator>
+    </BusinessSignUpProvider>
   );
 };
 
