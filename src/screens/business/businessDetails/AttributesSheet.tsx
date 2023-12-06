@@ -26,13 +26,13 @@ const CategoriesSheet = (
   const scrollHandlers = useScrollHandlers<ScrollView>('scrollview', actionSheetRef);
 
   const { data, isFetching } = useQuery({
-    queryKey: ['attributes'], // Update query key
-    queryFn: getAttributes, // Update query function
+    queryKey: ['attributes'],
+    queryFn: getAttributes,
   });
 
   const { fields, append, remove } = useFieldArray({
     keyName: '_id',
-    name: 'attributes', // Update field name
+    name: 'attributes',
     control: props.payload?.control,
   });
 

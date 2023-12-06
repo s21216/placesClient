@@ -6,8 +6,13 @@
 
 export interface paths {
   "/reviews": {
-    get: operations["getReview"];
+    get: operations["getReviewByUserAndBusiness"];
     put: operations["createOrUpdateReview"];
+  };
+  "/reviews/{reviewId}/reply": {
+    get: operations["getReviewReply"];
+    put: operations["createOrUpdateReviewReply"];
+    delete: operations["deleteReviewReply"];
   };
   "/businesses/location": {
     put: operations["updateBusinessLocation"];
@@ -41,7 +46,7 @@ export interface paths {
     get: operations["getVisited"];
   };
   "/reviews/{reviewId}": {
-    get: operations["getReview_1"];
+    get: operations["getReview"];
     delete: operations["deleteReview"];
   };
   "/categories": {
@@ -96,6 +101,9 @@ export interface components {
       score?: number;
       description?: string;
       reply?: components["schemas"]["ReviewReply"];
+    };
+    ReviewReplyRequest: {
+      description?: string;
     };
     UpdateBusinessLocationRequest: {
       address?: string;
@@ -327,7 +335,7 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  getReview: {
+  getReviewByUserAndBusiness: {
     parameters: {
       query: {
         userId: string;
@@ -378,6 +386,114 @@ export interface operations {
         content: {
           "*/*": components["schemas"]["ReviewResponse"];
         };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  getReviewReply: {
+    parameters: {
+      path: {
+        reviewId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ReviewReply"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  createOrUpdateReviewReply: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+      path: {
+        reviewId: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReviewReplyRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ReviewReply"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  deleteReviewReply: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+      path: {
+        reviewId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
       };
       /** @description Bad Request */
       400: {
@@ -794,10 +910,10 @@ export interface operations {
       };
     };
   };
-  getReview_1: {
+  getReview: {
     parameters: {
       path: {
-        reviewId: string;
+        reviewId: number;
       };
     };
     responses: {

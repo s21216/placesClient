@@ -72,16 +72,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function logIn(email: string, password: string) {
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       Alert.alert(error.message);
     }
   }
 
   async function signOut() {
-    await getAuth().signOut();
-    setCurrentUser(undefined);
-    setRole(null);
+    try {
+      await getAuth().signOut();
+      setCurrentUser(undefined);
+      setRole(null);
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
   }
 
   async function userSignUp({ email, fullName, username, password }: UserSignUpData) {

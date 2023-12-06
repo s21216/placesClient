@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator, Avatar, Button, Chip, Text } from 'react-native-paper';
 
 import { getBusinessDetails, getBusinessReviews } from '../../../api/business';
-import { deleteReview, getReview } from '../../../api/review';
+import { deleteReview, getReviewByUserAndBusiness } from '../../../api/review';
 import { getCheckInState, postCheckIn } from '../../../api/user';
 import ReviewCard from '../../../components/reviewScreen/ReviewCard';
 import { useAuth } from '../../../helpers/contexts/AuthContext';
@@ -56,7 +56,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
 
   const getReviewQuery = useQuery({
     queryKey: ['review', userId, route.params.businessId],
-    queryFn: () => getReview(userId!, route.params.businessId),
+    queryFn: () => getReviewByUserAndBusiness(userId!, route.params.businessId),
     retry: false,
   });
 
@@ -154,11 +154,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
             {getReviewsQuery.data?.data?.results?.length === 0 && <Text>No reviews yet</Text>}
             {getReviewQuery.data?.data === undefined ||
               (!getReviewQuery.isError && (
-                <ReviewCard
-                  editable
-                  review={getReviewQuery.data?.data}
-                  deleteFn={deleteReviewMutation.mutate}
-                />
+                <ReviewCard reviewEditable review={getReviewQuery.data?.data} />
               ))}
             {getReviewsQuery.data?.data?.results
               ?.filter((review) => review.postOwner?.firebaseUid !== currentUser?.uid)
@@ -215,7 +211,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: 'white',
-    padding: 20,
+    padding: 15,
     marginBottom: 5,
   },
   row: {

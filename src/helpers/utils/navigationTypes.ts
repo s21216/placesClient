@@ -87,8 +87,18 @@ export type BusinessLocationProps = StackScreenProps<
   'BusinessLocation'
 >;
 
+export type BusinessCardNavigation = StackScreenProps<
+  SearchTabParamList | BusinessReviewTabParamList
+>;
+
 export type BusinessReviewTabParamList = {
   BusinessReviewList: undefined;
+  BusinessReviewReply: { reviewId: number };
 };
+
+export type BusinessReviewReplyScreenProps = StackScreenProps<
+  BusinessReviewTabParamList,
+  'BusinessReviewReply'
+>;
 
 export type ValidUrl = keyof paths;

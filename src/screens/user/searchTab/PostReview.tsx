@@ -9,7 +9,7 @@ import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import { AirbnbRating } from 'react-native-ratings';
 import { z } from 'zod';
 
-import { getReview, postReview } from '../../../api/review';
+import { getReviewByUserAndBusiness, postReview } from '../../../api/review';
 import { useAuth } from '../../../helpers/contexts/AuthContext';
 import { PostReviewProps } from '../../../helpers/utils/navigationTypes';
 
@@ -49,7 +49,7 @@ const PostReview = ({ navigation, route }: PostReviewProps) => {
 
   const getReviewQuery = useQuery({
     queryKey: ['review', userId, route.params.businessId],
-    queryFn: () => getReview(userId!, route.params.businessId),
+    queryFn: () => getReviewByUserAndBusiness(userId!, route.params.businessId),
     retry: false,
   });
 

@@ -41,8 +41,8 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
   });
   const [searchLocation, setSearchLocation] = useState({
     description: '',
-    latitude: 52,
-    longitude: 21,
+    latitude: 0,
+    longitude: 0,
   });
 
   // useEffect(() => {
@@ -107,26 +107,23 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
     setIsSearchBarActive(isOn);
   };
 
-  const onSearchSubmitClick = useCallback(
-    async () => {
-      await searchMutation.mutateAsync({
-        searchQuery,
-        searchBody: {
-          pageSize: 10,
-          pageNumber: 0,
-          filters: {
-            latitude: searchLocation.latitude,
-            longitude: searchLocation.longitude,
-            distance: 5,
-          },
+  const onSearchSubmitClick = useCallback(async () => {
+    await searchMutation.mutateAsync({
+      searchQuery,
+      searchBody: {
+        pageSize: 10,
+        pageNumber: 0,
+        filters: {
+          latitude: searchLocation.latitude,
+          longitude: searchLocation.longitude,
+          distance: 5,
         },
-      });
-      setIsSearchBarActive(false);
-      actionSheetRef.current?.show();
-    },
+      },
+    });
+    setIsSearchBarActive(false);
+    actionSheetRef.current?.show();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchMutation.mutateAsync, searchLocation.latitude, searchLocation.longitude]
-  );
+  }, [searchMutation.mutate, searchQuery, searchLocation.latitude, searchLocation.longitude]);
 
   const onSuggestionClick = useCallback(
     async (suggestion: string) => {
@@ -272,6 +269,9 @@ const SearchScreen = ({ navigation, route }: SearchScreenProps) => {
           textInputProps={{
             ref: locationPickerRef,
             returnKeyType: 'search',
+            // value: searchLocation.description,
+            // onChangeText: (text: string) =>
+            //   setSearchLocation((prev) => ({ ...prev, description: text })),
             onFocus: () => setIsAutocompleteVisible(false),
             onSubmitEditing: () => onSearchSubmitClick(),
           }}

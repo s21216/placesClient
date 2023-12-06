@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { NativeSyntheticEvent, StyleSheet, Text, TextLayoutEventData, View } from 'react-native';
 
-import { ReviewResult } from '../../helpers/utils/types';
-
-const ExpandableText = ({ item }: { item?: ReviewResult }) => {
+const ExpandableText = ({ text }: { text?: string }) => {
   const [textShown, setTextShown] = useState(false);
   const [lengthMore, setLengthMore] = useState(false);
 
@@ -11,9 +9,9 @@ const ExpandableText = ({ item }: { item?: ReviewResult }) => {
     setTextShown(!textShown);
   };
 
-  const onTextLayout = useCallback((e: any) => {
-    setLengthMore(e.nativeEvent.lines.length > 5);
-  }, []);
+  const onTextLayout = (e: NativeSyntheticEvent<TextLayoutEventData>) => {
+    setLengthMore(e.nativeEvent.lines.length >= 5);
+  };
 
   return (
     <View style={styles.container}>
@@ -21,7 +19,7 @@ const ExpandableText = ({ item }: { item?: ReviewResult }) => {
         onTextLayout={onTextLayout}
         numberOfLines={textShown ? undefined : 5}
         style={styles.text}>
-        {item?.description}
+        {text}
       </Text>
       {lengthMore ? (
         <Text onPress={toggleNumberOfLines} style={styles.readMore}>

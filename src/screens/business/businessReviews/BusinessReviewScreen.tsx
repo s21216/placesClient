@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { FlatList, RefreshControl } from 'react-native-gesture-handler';
 import { ActivityIndicator } from 'react-native-paper';
 
-import { getBusinessReviews } from '../../api/business';
-import ReviewCard from '../../components/reviewScreen/ReviewCard';
-import { useAuth } from '../../helpers/contexts/AuthContext';
+import { getBusinessReviews } from '../../../api/business';
+import ReviewCard from '../../../components/reviewScreen/ReviewCard';
+import { useAuth } from '../../../helpers/contexts/AuthContext';
 
 const BusinessReviewScreen = () => {
   const { currentUser } = useAuth();

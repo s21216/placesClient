@@ -32,7 +32,7 @@ const ReviewList = ({ route }: ReviewListProps) => {
   return (
     <View style={styles.container}>
       <FlatList
-        style={{ padding: 20 }}
+        style={{ paddingHorizontal: 15 }}
         data={data?.pages?.flatMap((page) => page.data?.results) || []}
         renderItem={({ item }) => <ReviewCard review={item!} />}
         keyExtractor={(item) => item?.id?.toString()!}
