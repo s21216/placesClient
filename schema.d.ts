@@ -20,6 +20,9 @@ export interface paths {
   "/businesses/details": {
     put: operations["updateBusinessDetails"];
   };
+  "/users/{userId}/visited": {
+    post: operations["getVisitedBusinesses"];
+  };
   "/checkIns": {
     get: operations["getCheckInExists"];
     post: operations["createCheckIn"];
@@ -39,11 +42,11 @@ export interface paths {
   "/auth/businesses/signup": {
     post: operations["createBusiness"];
   };
+  "/users/{userId}": {
+    get: operations["getInfo"];
+  };
   "/users/{userId}/reviews": {
     get: operations["getReviews_1"];
-  };
-  "/users/{userId}/checkIns": {
-    get: operations["getVisited"];
   };
   "/reviews/{reviewId}": {
     get: operations["getReview"];
@@ -131,6 +134,60 @@ export interface components {
       cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
       attributes?: components["schemas"]["Attribute"][];
     };
+    PaginatedRequest: {
+      /** Format: int32 */
+      pageSize?: number;
+      /** Format: int32 */
+      pageNumber?: number;
+      orderBy?: string;
+      /** @enum {string} */
+      sortOrder?: "ASC" | "DESC";
+    };
+    PaginatedResponseVisitedBusiness: {
+      /**
+       * Format: int32
+       * @description Rozmiar strony
+       * @example 100
+       */
+      pageSize?: number;
+      /**
+       * Format: int32
+       * @description Numer strony
+       * @example 0
+       */
+      pageNumber?: number;
+      /**
+       * Format: int32
+       * @description Liczba elementów na stronie
+       * @example 5
+       */
+      numberOfElements?: number;
+      /**
+       * Format: int64
+       * @description Liczba wszystkich elementów
+       * @example 5
+       */
+      totalNumberOfElements?: number;
+      /**
+       * Format: int32
+       * @description Liczba stron
+       * @example 5
+       */
+      totalPages?: number;
+      /** @description Lista elementów */
+      results?: components["schemas"]["VisitedBusiness"][];
+    };
+    /** @description Lista elementów */
+    VisitedBusiness: {
+      name?: string;
+      firebaseUid?: string;
+      address?: string;
+      type?: string;
+      /** @enum {string} */
+      cost?: "INEXPENSIVE" | "MODERATE" | "EXPENSIVE" | "VERY_EXPENSIVE";
+      /** Format: double */
+      score?: number;
+    };
     CheckInRequest: {
       businessId?: string;
       /** Format: double */
@@ -144,15 +201,6 @@ export interface components {
       businessId?: string;
       /** Format: date-time */
       createdAt?: string;
-    };
-    PaginatedRequest: {
-      /** Format: int32 */
-      pageSize?: number;
-      /** Format: int32 */
-      pageNumber?: number;
-      orderBy?: string;
-      /** @enum {string} */
-      sortOrder?: "ASC" | "DESC";
     };
     PaginatedResponseReviewResponse: {
       /**
@@ -290,6 +338,13 @@ export interface components {
       phoneNumber?: string;
       type?: string;
       location?: components["schemas"]["Location"];
+    };
+    UserInfo: {
+      username?: string;
+      /** Format: int32 */
+      numberOfCheckIns?: number;
+      /** Format: int32 */
+      numberOfReviews?: number;
     };
     Review: {
       /** Format: int64 */
@@ -587,6 +642,44 @@ export interface operations {
       };
     };
   };
+  getVisitedBusinesses: {
+    parameters: {
+      path: {
+        userId: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaginatedRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["PaginatedResponseVisitedBusiness"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
   getCheckInExists: {
     parameters: {
       query: {
@@ -844,7 +937,7 @@ export interface operations {
       };
     };
   };
-  getReviews_1: {
+  getInfo: {
     parameters: {
       path: {
         userId: string;
@@ -854,7 +947,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["Review"][];
+          "*/*": components["schemas"]["UserInfo"];
         };
       };
       /** @description Bad Request */
@@ -877,7 +970,7 @@ export interface operations {
       };
     };
   };
-  getVisited: {
+  getReviews_1: {
     parameters: {
       path: {
         userId: string;
@@ -887,7 +980,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["CheckInResponse"][];
+          "*/*": components["schemas"]["Review"][];
         };
       };
       /** @description Bad Request */

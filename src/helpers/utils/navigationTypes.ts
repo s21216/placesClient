@@ -19,24 +19,35 @@ export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'Business
 export type UserNavigatorParamList = {
   HomeTab: undefined;
   SearchTab: undefined;
-  Profile: undefined;
+  ProfileTab: undefined;
 };
 
 export type HomeTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'HomeTab'>;
 export type SearchTabProps = BottomTabNavigationProp<UserNavigatorParamList, 'SearchTab'>;
 
 export type SearchTabParamList = {
-  SearchScreen: undefined;
+  Search: undefined;
   Details: { businessId: string };
   PostReview: { businessId: string };
   ReviewList: { businessId: string };
   BusinessLocation: { businessId: string };
 };
 
-export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'SearchScreen'>;
+export type SearchScreenProps = StackScreenProps<SearchTabParamList, 'Search'>;
 export type DetailsProps = StackScreenProps<SearchTabParamList, 'Details'>;
 export type PostReviewProps = StackScreenProps<SearchTabParamList, 'PostReview'>;
 export type ReviewListProps = StackScreenProps<SearchTabParamList, 'ReviewList'>;
+
+export type ProfileTabParamList = {
+  Profile: undefined;
+  Visited: undefined;
+  Details: { businessId: string };
+  Reviews: undefined;
+  Settings: undefined;
+};
+
+export type ProfileProps = StackScreenProps<ProfileTabParamList, 'Profile'>;
+export type VisitedProps = StackScreenProps<ProfileTabParamList, 'Visited'>;
 
 //Business navgigation types
 

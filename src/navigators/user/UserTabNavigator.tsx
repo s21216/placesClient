@@ -1,9 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import ProfileStack from './ProfileStack';
 import SearchStack from './SearchStack';
 import { UserNavigatorParamList } from '../../helpers/utils/navigationTypes';
-import Profile from '../../screens/user/Profile';
 
 const Tab = createBottomTabNavigator<UserNavigatorParamList>();
 
@@ -27,10 +27,9 @@ function UserTabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="ProfileTab"
+        component={ProfileStack}
         options={{
-          tabBarLabel: 'Profile',
           headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}

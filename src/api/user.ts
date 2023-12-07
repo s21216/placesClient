@@ -11,3 +11,17 @@ export const postCheckIn = (request: CheckInRequest) =>
 
 export const getCheckInState = (userId: string, businessId: string) =>
   fetchClient().get<boolean>(checkInUrl, { params: { userId, businessId } });
+
+type UserInfo = components['schemas']['UserInfo'];
+const userInfoUrl: ValidUrl = '/users/{userId}';
+export const getUserInfo = (userId: string) =>
+  fetchClient().get<UserInfo>(userInfoUrl.replace('{userId}', userId));
+
+type PaginatedRequest = components['schemas']['PaginatedRequest'];
+type PaginatedVisitedBusiness = components['schemas']['PaginatedResponseVisitedBusiness'];
+const visitedBusinessesUrl: ValidUrl = '/users/{userId}/visited';
+export const getVisitedBusinesses = (userId: string, request: PaginatedRequest) =>
+  fetchClient().post<PaginatedVisitedBusiness>(
+    visitedBusinessesUrl.replace('{userId}', userId),
+    request
+  );
