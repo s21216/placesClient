@@ -2,8 +2,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { BusinessHomeTabParamList } from '../../helpers/utils/navigationTypes';
 import LocationPicker from '../../screens/business/LocationPicker';
-import BusinessEditDetailsScreen from '../../screens/business/businessDetails/BusinessEditDetailsScreen';
-import BusinessHomeScreen from '../../screens/business/businessDetails/BusinessHomeScreen';
+import BusinessEditDetailsScreen from '../../screens/business/detailsTab/BusinessEditDetailsScreen';
+import BusinessHomeScreen from '../../screens/business/detailsTab/BusinessHomeScreen';
 import BusinessLocationScreen from '../../screens/shared/BusinessLocationScreen';
 
 const Stack = createStackNavigator<BusinessHomeTabParamList>();

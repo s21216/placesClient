@@ -22,7 +22,7 @@ const Profile = ({ navigation }: ProfileProps) => {
 
   const options = [
     { name: 'Visited', textColor: 'black', fn: () => navigation.navigate('Visited') },
-    { name: 'Update email', textColor: 'black', fn: () => {} },
+    { name: 'Update email', textColor: 'black', fn: () => navigation.navigate('UpdateEmail') },
     {
       name: 'Change password',
       textColor: 'black',

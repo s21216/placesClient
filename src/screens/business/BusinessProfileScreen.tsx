@@ -21,7 +21,7 @@ const BusinessProfile = ({ navigation }: BusinessProfileScreenProps) => {
   });
 
   const options = [
-    { name: 'Update email', textColor: 'black', fn: () => {} },
+    { name: 'Update email', textColor: 'black', fn: () => navigation.navigate('UpdateEmail') },
     {
       name: 'Change password',
       textColor: 'black',

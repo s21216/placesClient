@@ -1,5 +1,6 @@
 import { components } from '../../schema';
 import fetchClient from '../helpers/utils/fetchClient';
+import { ValidUrl } from '../helpers/utils/navigationTypes';
 
 export type UserSignUpData = {
   email: string;
@@ -30,3 +31,12 @@ export const userSignUpFn = (userSignUpData: UserSignUpData) =>
 
 export const businessSignUpFn = (businessSignUpData: BusinessSignUpData) =>
   fetchClient().post<AuthResponse>('auth/businesses/signup', businessSignUpData);
+
+const changeUserEmailUrl: ValidUrl = '/auth/user/email';
+type ChangeEmailRequest = components['schemas']['ChangeEmailRequest'];
+export const changeUserEmail = (request: ChangeEmailRequest) =>
+  fetchClient().post(changeUserEmailUrl, request);
+
+const changeBusinessEmailUrl: ValidUrl = '/auth/user/email';
+export const changeBusinessEmail = (request: ChangeEmailRequest) =>
+  fetchClient().post(changeBusinessEmailUrl, request);

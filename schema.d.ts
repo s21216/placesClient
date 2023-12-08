@@ -36,11 +36,17 @@ export interface paths {
   "/auth/users/signup": {
     post: operations["createUser"];
   };
+  "/auth/user/email": {
+    post: operations["updateUserPassword"];
+  };
   "/auth/signin": {
     post: operations["signIn"];
   };
   "/auth/businesses/signup": {
     post: operations["createBusiness"];
+  };
+  "/auth/business/email": {
+    post: operations["updateBusinessPassword"];
   };
   "/users/{userId}": {
     get: operations["getInfo"];
@@ -331,6 +337,9 @@ export interface components {
       firebaseUid?: string;
       /** @enum {string} */
       role?: "USER" | "BUSINESS";
+    };
+    ChangeEmailRequest: {
+      email?: string;
     };
     BusinessSignUpRequest: {
       email?: string;
@@ -870,6 +879,44 @@ export interface operations {
       };
     };
   };
+  updateUserPassword: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ChangeEmailRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["AuthResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
   signIn: {
     parameters: {
       header: {
@@ -912,6 +959,44 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["BusinessSignUpRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["AuthResponse"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "*/*": string;
+        };
+      };
+      /** @description Not Found */
+      404: {
+        content: {
+          "*/*": string;
+        };
+      };
+    };
+  };
+  updateBusinessPassword: {
+    parameters: {
+      header: {
+        Authorization: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ChangeEmailRequest"];
       };
     };
     responses: {

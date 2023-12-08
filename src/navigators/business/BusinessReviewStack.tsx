@@ -1,8 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { BusinessReviewTabParamList } from '../../helpers/utils/navigationTypes';
-import BusinessReviewReplyScreen from '../../screens/business/businessReviews/BusinessReviewReplyScreen';
-import BusinessReviewScreen from '../../screens/business/businessReviews/BusinessReviewScreen';
+import BusinessReviewReplyScreen from '../../screens/business/reviewsTab/BusinessReviewReplyScreen';
+import BusinessReviewScreen from '../../screens/business/reviewsTab/BusinessReviewScreen';
 
 const Stack = createStackNavigator<BusinessReviewTabParamList>();
 

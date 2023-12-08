@@ -46,11 +46,13 @@ export type ProfileTabParamList = {
   Details: { businessId: string };
   Reviews: undefined;
   UpdatePassword: undefined;
+  UpdateEmail: undefined;
 };
 
 export type ProfileProps = StackScreenProps<ProfileTabParamList, 'Profile'>;
 export type VisitedProps = StackScreenProps<ProfileTabParamList, 'Visited'>;
 export type UpdatePasswordProps = StackScreenProps<ProfileTabParamList, 'UpdatePassword'>;
+export type UpdateEmailProps = StackScreenProps<ProfileTabParamList, 'UpdateEmail'>;
 
 //Business navgigation types
 
@@ -118,6 +120,7 @@ export type BusinessReviewReplyScreenProps = StackScreenProps<
 export type BusinessProfileTabParamList = {
   BusinessProfile: undefined;
   UpdatePassword: undefined;
+  UpdateEmail: undefined;
 };
 
 export type BusinessProfileScreenProps = StackScreenProps<
