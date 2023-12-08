@@ -371,6 +371,10 @@ export interface components {
       score?: number;
       location?: components["schemas"]["Location"];
       attributes?: components["schemas"]["Attribute"][];
+      /** Format: int32 */
+      numberOfVisitors?: number;
+      /** Format: int32 */
+      numberOfReviews?: number;
       /** Format: date */
       joinDate?: string;
       /** @enum {string} */

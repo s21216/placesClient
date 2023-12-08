@@ -62,7 +62,17 @@ const LogIn = ({ navigation }: LogInProps) => {
           <Button style={styles.button} mode="contained" onPress={handleSubmit(onLogInPress)}>
             Log in
           </Button>
-          <View>
+          <View style={styles.option}>
+            <Text>
+              Forgot password?{' '}
+              <Text
+                style={{ color: '#4285F4' }}
+                onPress={() => navigation.navigate('PasswordReset')}>
+                Reset password.
+              </Text>
+            </Text>
+          </View>
+          <View style={styles.option}>
             <Text>
               Don't have an account?{' '}
               <Text style={{ color: '#4285F4' }} onPress={() => navigation.navigate('UserSignUp')}>
@@ -70,7 +80,7 @@ const LogIn = ({ navigation }: LogInProps) => {
               </Text>
             </Text>
           </View>
-          <View>
+          <View style={styles.option}>
             <Text>
               <Text
                 style={{ color: '#4285F4' }}
@@ -104,5 +114,8 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     width: '70%',
+  },
+  option: {
+    margin: 2,
   },
 });

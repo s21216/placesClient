@@ -4,9 +4,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import BusinessHomeStack from './BusinessHomeStack';
+import BusinessProfileStack from './BusinessProfileStack';
 import BusinessReviewStack from './BusinessReviewStack';
 import { BusinessNavigatorParamList } from '../../helpers/utils/navigationTypes';
-import BusinessSettingsScreen from '../../screens/business/BusinessSettingsScreen';
 
 const Tab = createBottomTabNavigator<BusinessNavigatorParamList>();
 
@@ -40,9 +40,9 @@ function BusinessTabNavigator() {
       />
       <Tab.Screen
         name="ProfileTab"
-        component={BusinessSettingsScreen}
+        component={BusinessProfileStack}
         options={{
-          tabBarLabel: 'Settings',
+          tabBarLabel: 'Profile',
           headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}

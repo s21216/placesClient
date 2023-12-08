@@ -4,6 +4,7 @@ import {
   User,
   createUserWithEmailAndPassword,
   getAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
@@ -27,6 +28,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   userSignUp: ({ email, fullName, username, password }: UserSignUpData) => void;
   businessSignUp: ({ email, name, phoneNumber, password, location }: BusinessSignUpData) => void;
+  sendPasswordReset: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,7 +45,7 @@ const auth = FIREBASE_AUTH;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User>();
-  const [role, setRole] = useState<string | null>();
+  const [role, setRole] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
 
   const { mutate, isLoading } = useMutation({
@@ -82,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await getAuth().signOut();
       setCurrentUser(undefined);
-      setRole(null);
+      setRole(undefined);
     } catch (error: any) {
       Alert.alert(error.message);
     }
@@ -117,16 +119,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function sendPasswordReset(email: string) {
+    return sendPasswordResetEmail(getAuth(), email);
+  }
+
   useEffect(() => {
-    setLoading(true);
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
+      setLoading(true);
       if (user) {
         mutate();
         setCurrentUser(user);
       }
       SplashScreen.hideAsync();
+      setLoading(false);
     });
-    setLoading(false);
     return unsubscribe;
   }, [mutate]);
 
@@ -139,6 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
     userSignUp,
     businessSignUp,
+    sendPasswordReset,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

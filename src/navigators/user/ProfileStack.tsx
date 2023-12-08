@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BusinessDetailsStack from './BusinessDetailsStack';
 import { ProfileTabParamList } from '../../helpers/utils/navigationTypes';
+import UpdatePassword from '../../screens/shared/UpdatePassword';
 import Profile from '../../screens/user/profileTab/Profile';
 import Visited from '../../screens/user/profileTab/Visited';
 
@@ -21,6 +22,11 @@ const ProfileStack = () => {
         name="Visited"
         component={Visited}
         options={{ headerTitle: 'Visited', headerShown: true, headerTintColor: 'black' }}
+      />
+      <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePassword}
+        options={{ headerTitle: '', headerShown: true, headerTintColor: 'black' }}
       />
       {businessDetailsStack}
     </Stack.Navigator>

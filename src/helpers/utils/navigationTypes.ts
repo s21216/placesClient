@@ -10,11 +10,13 @@ export type RootStackParamList = {
   BusinessSignUpLocation: undefined;
   BusinessStack: undefined;
   UserStack: undefined;
+  PasswordReset: undefined;
 };
 
 export type LogInProps = StackScreenProps<RootStackParamList, 'LogIn'>;
 export type UserSignUpProps = StackScreenProps<RootStackParamList, 'UserSignUp'>;
 export type BusinessSignUpProps = StackScreenProps<RootStackParamList, 'BusinessSignUp'>;
+export type PasswordResetProps = StackScreenProps<RootStackParamList, 'PasswordReset'>;
 
 export type UserNavigatorParamList = {
   HomeTab: undefined;
@@ -43,11 +45,12 @@ export type ProfileTabParamList = {
   Visited: undefined;
   Details: { businessId: string };
   Reviews: undefined;
-  Settings: undefined;
+  UpdatePassword: undefined;
 };
 
 export type ProfileProps = StackScreenProps<ProfileTabParamList, 'Profile'>;
 export type VisitedProps = StackScreenProps<ProfileTabParamList, 'Visited'>;
+export type UpdatePasswordProps = StackScreenProps<ProfileTabParamList, 'UpdatePassword'>;
 
 //Business navgigation types
 
@@ -110,6 +113,16 @@ export type BusinessReviewTabParamList = {
 export type BusinessReviewReplyScreenProps = StackScreenProps<
   BusinessReviewTabParamList,
   'BusinessReviewReply'
+>;
+
+export type BusinessProfileTabParamList = {
+  BusinessProfile: undefined;
+  UpdatePassword: undefined;
+};
+
+export type BusinessProfileScreenProps = StackScreenProps<
+  BusinessProfileTabParamList,
+  'BusinessProfile'
 >;
 
 export type ValidUrl = keyof paths;

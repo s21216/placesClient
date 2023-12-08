@@ -22,7 +22,12 @@ const Profile = ({ navigation }: ProfileProps) => {
 
   const options = [
     { name: 'Visited', textColor: 'black', fn: () => navigation.navigate('Visited') },
-    { name: 'Settings', textColor: 'black', fn: () => {} },
+    { name: 'Update email', textColor: 'black', fn: () => {} },
+    {
+      name: 'Change password',
+      textColor: 'black',
+      fn: () => navigation.navigate('UpdatePassword'),
+    },
     { name: 'Log out', textColor: 'red', fn: onSignOutPress },
   ];
 
@@ -32,12 +37,12 @@ const Profile = ({ navigation }: ProfileProps) => {
         <Text variant="displaySmall">{data?.data.username}</Text>
         <View style={styles.row}>
           <View style={styles.center}>
-            <Text variant="titleLarge">Check ins</Text>
             <Text variant="headlineMedium">{data?.data.numberOfCheckIns}</Text>
+            <Text variant="titleLarge">Check ins</Text>
           </View>
           <View style={styles.center}>
-            <Text variant="titleLarge">Reviews</Text>
             <Text variant="headlineMedium">{data?.data.numberOfReviews}</Text>
+            <Text variant="titleLarge">Reviews</Text>
           </View>
         </View>
       </View>
