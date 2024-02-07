@@ -19,6 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       googleMapsApiKey: process.env.EXPO_PUBLIC_MAPS_KEY,
     },
     supportsTablet: true,
+    bundleIdentifier: 'com.s21216.client',
   },
   android: {
     softwareKeyboardLayoutMode: 'pan',
