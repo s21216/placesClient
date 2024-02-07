@@ -6,6 +6,7 @@ import {
   getAuth,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth';
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { Alert } from 'react-native';

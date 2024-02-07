@@ -283,11 +283,7 @@ export interface components {
       role?: "USER" | "BUSINESS";
     };
     Location: {
-      country?: string;
       address?: string;
-      zipCode?: string;
-      city?: string;
-      district?: string;
       /** Format: double */
       latitude?: number;
       /** Format: double */

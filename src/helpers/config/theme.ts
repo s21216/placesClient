@@ -18,7 +18,7 @@ export const theme = {
     onErrorContainer: 'rgb(65, 0, 2)',
     background: 'white',
     onBackground: 'rgb(29, 27, 30)',
-    surface: 'rgb(255, 251, 255)',
+    surface: 'rgb(255, 255, 255)',
     onSurface: 'rgb(29, 27, 30)',
     surfaceVariant: '#e8e6e6',
     onSurfaceVariant: 'rgb(74, 69, 78)',

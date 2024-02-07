@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { LogBox } from 'react-native';
 import { SheetProvider } from 'react-native-actions-sheet';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -15,7 +16,7 @@ import './src/helpers/utils/sheets.tsx';
 const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
-
+LogBox.ignoreAllLogs();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>

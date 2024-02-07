@@ -34,7 +34,9 @@ const LogIn = ({ navigation }: LogInProps) => {
       style={{ flex: 1 }}
       keyboardVerticalOffset={Platform.OS === 'ios' ? -64 : 0}>
       {mutationLoading ? (
-        <ActivityIndicator />
+        <View style={styles.container}>
+          <ActivityIndicator color="black" size={50} />
+        </View>
       ) : (
         <View style={styles.container}>
           <View>

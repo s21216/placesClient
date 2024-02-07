@@ -31,6 +31,7 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
       Alert.alert('Checked in!');
       queryClient.invalidateQueries(['checkIn']);
       queryClient.invalidateQueries({ queryKey: ['search'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       setIsLoading(false);
     },
     onError: (error: any) => Alert.alert(error.response.data),
@@ -76,7 +77,9 @@ const BusinessDetails = ({ navigation, route }: DetailsProps) => {
       Alert.alert('Permission to access location was denied');
       return;
     }
-    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Low });
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+    });
     checkInMutation.mutate({
       businessId: route.params.businessId,
       latitude: location.coords.latitude,
